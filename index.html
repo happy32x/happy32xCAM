@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>happy32xCAM</title>
+    <link rel="icon" type="image/x-icon" href="src/img/camera.ico">
+    <style>
+        .title_floating {
+            position: fixed;
+            top: 0px;
+            right: 0px;
+            color: white;
+            padding: 3px;
+            padding-left: 5px;
+            background-color: rgb(0, 0, 0, 0.4);
+        }
+        a{
+            color: white;
+            text-decoration: none;
+        }
+        h4, p  {
+            margin: 0;
+            padding: 0;
+            /*color: greenyellow;*/
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none;    /* Firefox */
+            -ms-user-select: none;     /* Internet Explorer/Edge */
+            user-select: none;         /* Standard */
+        }
+        .full_screen {
+            height: 100vh;
+            width: 100vw;
+            /*background-image: url(src/img/noise.gif);*/
+            background-color: blue;
+            background-size: 35vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .loading_container{
+            background-color: rgb(0, 0, 0, 0.4);
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items:center;
+            color: white;
+        }
+        .loading_container > * {
+            margin: 5px;
+        }
+        .button_turn_camera_on{
+            background-color: greenyellow;
+            color: black;
+        }
+        .button_turn_camera_off{
+            background-color: red;
+            color: white;
+        }
+        .all_button{
+            cursor: pointer;
+            padding: 10px;
+            justify-content: center;
+            align-items:center;
+        }
+        .all_text{
+            font-size: 13px;
+            font-family: "Lucida Console";
+        }
+    </style>
+</head>
+<body>
+    <audio id="noise_tv_sound" loop><source src="src/audio/noise_tv_sound.mp3" type="audio/mpeg"></audio>
+    <div class="title_floating all_text"><a href="https://github.com/happy32x" target="_blank">happy32xCAM</a></div>
+
+    <div class="full_screen">   
+        <div class="loading_container">
+            <!-- <img src="src/img/loader.gif" width="50px"/>
+            <p class="all_text">Camera detection in progress ...</p> -->
+            <div onclick="turn_screen_to_noise_tv()" class="button_turn_camera_on all_button all_text">Press to switch on the camera</div>
+        </div>
+    </div>
+
+    <script>
+        //lock zoom
+        document.addEventListener('wheel', function(event) {
+             if (event.ctrlKey) {
+                event.preventDefault();
+             }
+           }, { passive: false });
+        document.addEventListener('keydown', function(event) {
+            if ( (event.ctrlKey && event.key === '-') || (event.ctrlKey && event.key === '+') ) {
+                noise_tv_sound.play();
+                event.preventDefault();
+            }
+        }, { passive: false });
+   
+        //turn screen to noise tv
+        function turn_screen_to_noise_tv() {
+            //on supprime le button et on remplace par le loader et le message
+            document.querySelector('.loading_container').innerHTML = `
+                <img src="src/img/loader.gif" width="50px"/>
+                <p class="all_text">Camera detection in progress ...</p>
+                <div onclick="turn_screen_to_blue_tv()" class="button_turn_camera_off all_button all_text">Press to switch off the camera</div>
+            `;
+    
+            //on change le background de fullscreen de blue vers noise
+            let img = new Image();
+            img.src = 'src/img/noise.gif';
+            
+            img.onload = function() {
+                document.getElementById("noise_tv_sound").play();
+                document.querySelector('.full_screen').style.backgroundImage = 'url('+img.src+')';
+            };
+        }
+
+        //turn screen to blue tv
+        function turn_screen_to_blue_tv() {
+            //on change le background de fullscreen de noise vers blue
+            document.getElementById("noise_tv_sound").pause();
+            document.querySelector('.full_screen').style.backgroundImage = null;
+
+            //on supprime le loader et le message et on remplace par le button
+            document.querySelector('.loading_container').innerHTML = `
+                <div onclick="turn_screen_to_noise_tv()" class="button_turn_camera_on all_button all_text">Press to switch on the camera</div>
+            `;
+        }
+    </script>
+</body>
+</html>
