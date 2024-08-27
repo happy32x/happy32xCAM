@@ -168,7 +168,7 @@
                 <p>OFF</p>
             </div>
             <!---------------------------------------------- refresh button ------------------------------------------------------>
-            <div class="item">
+            <div class="item" onclick="reset_background_color_and_image()"">
                 <img src="src/img/refresh.png"
                      draggable="false"
                      width="20px"
@@ -206,7 +206,7 @@
         </div>
 
         <!-------------------------------------- go to github REPO ---------------------------------------------->
-        <div class="corner top-right"><a href="https://github.com/happy32x" target="_blank">happy32xCAM></a></div>
+        <div class="corner top-right"><a href="https://github.com/happy32x/happy32xCAM" target="_blank">happy32xCAM></a></div>
 
         <!----------------------------------- get app's all shortcut key ------------------------------------------>
         <div class="corner bottom-left">
@@ -233,60 +233,34 @@
 
  <!---------------------------------------------------------- SCRIPT ------------------------------------------------------------------>   
     <script>
-        ////////////////////////////////////////////////// DATABASE MANAGER ////////////////////////////////////////////////////
-        // Stocker une donnée
-localStorage.setItem('all_sound_muted', 'true');
+        ///////////////////////////////////////////// DATABASE MANAGER ///////////////////////////////////////////////
 
-// Récupérer une donnée
-var allSoundMuted = localStorage.getItem('all_sound_muted');
-console.log(allSoundMuted); // Affiche 'true'
+        /* We'll secure the database as we develop the application, 
+           but for now, we'll just monitor “true”, “false” & “null”. */
 
-// Supprimer une donnée
-//localStorage.removeItem('all_sound_muted');
+        /* We need to monitor everythings the user stores in the database
+           and everything we retrieve from the database, including
+           "true", "false" & "null", which we should transform into
+            true ,  false  &  null , respectivly. */
 
+        function setData(key, value) { localStorage.setItem(key, value); }
+        function getData(key) { return localStorage.getItem(key); }
 
-        /*function setCookie(name, value, months) {
-            var expires = "";
-            if (months) {
-                var date = new Date();
-                date.setMonth(date.getMonth() + months);
-                expires = "; expires=" + date.toUTCString();
-            }
-            document.cookie = name + "=" + (value || "") + expires + "; path=/";
-        }
-        function setCookie(name, value, minutes) {
-            var expires = "";
-            if (minutes) {
-                var date = new Date();
-                date.setTime(date.getTime() + (minutes * 60 * 1000));
-                expires = "; expires=" + date.toUTCString();
-            }
-             document.cookie = name + "=" + encodeURIComponent(value) + expires + "; path=/";
-        }
-        function getCookie(name) {
-            var nameEQ = name + "=";
-            var ca = document.cookie.split(';');
-            for (var i = 0; i < ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-            }
-            return null;
-        }
-        function eraseCookie(name) {
-            document.cookie = name + '=; Max-Age=-99999999;';
-        }*/
-
+        function deleteData(key) { localStorage.removeItem(key); }
+   
         ////////////////////////////////////////// TURN SCREEN TO TV NOISE ///////////////////////////////////////////
         function turn_screen_to_noise_tv() {
-            //on supprime le button et on remplace par le loader et le message
+            //we change windows
+            actualWindows = "noise_windows";
+
+            //we delete button and replace it by the loader and the message
             document.querySelector('.loading_container').innerHTML = `
                 <img draggable="false" src="src/img/loader.gif" width="50px"/>
                 <p class="all_text">Camera detection in progress ...</p>
                 <div onclick="turn_screen_to_blue_tv()" class="button_turn_camera_off all_button all_text">Press to switch off the camera</div>
             `;
     
-            //on change le background de fullscreen de blue vers noise
+            //we change the fullscreen's background from blue to noise
             let img = new Image();
             img.src = 'src/img/noise.gif';
             
@@ -298,11 +272,14 @@ console.log(allSoundMuted); // Affiche 'true'
 
         //////////////////////////////////////////// TURN SCREEN TO BLUE TV ///////////////////////////////////////////
         function turn_screen_to_blue_tv() {
-            //on change le background de fullscreen de noise vers blue
-            document.getElementById("noise_tv_sound").pause();
-            document.querySelector('.full_screen').style.backgroundImage = null;
+            //we change windows
+            actualWindows = "main_windows";
 
-            //on supprime le loader et le message et on remplace par le button
+            //we change the fullscreen's background from noise to blue
+            document.getElementById("noise_tv_sound").pause();
+            document.querySelector('.full_screen').style.backgroundImage = background_image ? 'url('+background_image+')' : null;
+
+            //we delete the loader and the message we replace them by the button
             document.querySelector('.loading_container').innerHTML = `
                 <div onclick="turn_screen_to_noise_tv()" class="button_turn_camera_on all_button all_text">Press to switch on the camera</div>
             `;
@@ -313,15 +290,44 @@ console.log(allSoundMuted); // Affiche 'true'
 
         ////////////////////////////////////////////////// PLAY/MUTE ALL SOUND //////////////////////////////////////////////////
         function play_mute_all_sound() {
-            if(all_sound_muted){
-                all_sound_muted = false;
+            if(all_sound_muted === "true"){
+                all_sound_muted = "false";
+                setData("all_sound_muted", all_sound_muted);
                 document.getElementById('noise_tv_sound').muted = false;
                 document.getElementById('play_mute_all_sound_image').src = "src/img/sound-on.png";
             } else {
-                all_sound_muted = true;
+                all_sound_muted = "true";
+                setData("all_sound_muted", all_sound_muted);
                 document.getElementById('noise_tv_sound').muted = true;
                 document.getElementById('play_mute_all_sound_image').src = "src/img/sound-off.png";
             }
+        }
+
+        /////////////////////////////////////////////////// TURN OFF APP /////////////////////////////////////////////////////
+        function turn_off_app() {
+            //we change windows
+            //actualWindows = "main_windows";
+
+            //we refresh all fullscreen contain from to main windows
+            //document.querySelector('.full_screen').innerHTML = '<div>THE ENTIRE MAIN WINDOWS HERE</div>';
+        }
+
+        ///////////////////////////////////////// RESET BACKGROUND COLOR & IMAGE /////////////////////////////////////////////
+        function reset_background_color_and_image() {
+            //Update var database;
+            background_image_editor_button = "src/img/camera.png";
+            background_color_editor_button = "blue";
+            background_image = null;
+
+            //update local database;
+            setData("background_image_editor_button", background_image_editor_button);
+            setData("background_color_editor_button", background_color_editor_button);
+            setData("background_image", background_image);
+
+            //update graphic;
+            document.getElementById('background_image_editor_button').src = background_image_editor_button;
+            document.getElementById('background_color_editor_button').style.backgroundColor = background_color_editor_button;
+            if(actualWindows === "main_windows") document.querySelector('.full_screen').style.backgroundImage = background_image;
         }
 
         ////////////////////////////////////////////////// LOCK ZOOM //////////////////////////////////////////////////
@@ -335,11 +341,19 @@ console.log(allSoundMuted); // Affiche 'true'
                 noise_tv_sound.play();
                 event.preventDefault();
             }
-        }, { passive: false });
+        }, { passive: false });    
+
+        //////////////////////////////////////////////// INITIALISATION ///////////////////////////////////////////////
+        let actualWindows = "main_windows";//main_windows, noise_windows, camera_windows, image_windows
+        let all_sound_muted = getData("all_sound_muted");
+
+        let background_image_editor_button = getData("background_image_editor_button") ? getData("background_image_editor_button") : "src/img/camera.png";
+        let background_color_editor_button = getData("background_color_editor_button") ? getData("background_color_editor_button") : "blue";
+        let background_image = getData("background_image") ? getData("background_image") : null;
 
         ///////////////////////////////////////////////// FIRST EXECUTION //////////////////////////////////////////////////////
-        function first_execution() {
-            if(all_sound_muted){
+        (function first_execution() {
+            if(all_sound_muted === "true"){
                 document.getElementById('noise_tv_sound').muted = true;
                 document.getElementById('play_mute_all_sound_image').src = "src/img/sound-off.png";
             } else {
@@ -349,18 +363,8 @@ console.log(allSoundMuted); // Affiche 'true'
 
             document.getElementById('background_image_editor_button').src = background_image_editor_button;
             document.getElementById('background_color_editor_button').style.backgroundColor = background_color_editor_button;
-        };
-
-        //////////////////////////////////////////////// INITIALISATION ///////////////////////////////////////////////
-        let all_sound_muted = false;
-        let background_image_editor_button = "src/img/camera.png";
-        let background_color_editor_button = "blue";
-
-        //let all_sound_muted = getCookie("all_sound_muted") ? true : false;
-        //let background_image_editor_button = getCookie("background_image_editor_button") ? getCookie("background_image_editor_button") : "src/img/camera.png";
-        //let background_color_editor_button = getCookie("background_color_editor_button") ? getCookie("background_color_editor_button") : "blue";
-
-        first_execution();
+            document.querySelector('.full_screen').style.backgroundImage = background_image ? 'url('+background_image+')' : null;
+        })();
     </script>
 </body>
 </html>
