@@ -8,6 +8,9 @@
 
 <!----------------------------------------------------------- CSS --------------------------------------------------------------------->
     <style>
+        #VIEW_image_input {
+            display: none;
+        }
         img {
             -webkit-user-drag: none;
         }
@@ -29,16 +32,23 @@
             -ms-user-select: none;     /* Internet Explorer/Edge */
             user-select: none;         /* Standard */
         }
-        .full_screen {
+        .VIEW_full_screen {
             height: 100vh;
             width: 100vw;
+
             /*background-image: url(src/img/BG.jpg);*/
-            background-color: blue;
-            background-size: 35vh;
+            background-color: #0000FF;
+
+            background-repeat: repeat;
+            background-position-x: 0px;
+            background-position-y: 0px;
+            background-size: 30vh;
+
             display: flex;
             justify-content: center;
             align-items: center;
         }
+
         .loading_container{
             background-color: rgb(0, 0, 0, 0.4);
             padding: 10px;
@@ -142,20 +152,65 @@
             height: 100%;
             object-fit: cover;
         }
-        .cercle-container div {
+
+        /* color picker style */
+        .item_color {
+            overflow: hidden;
+            height: 40px;
+            width: 40px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex: 1;
+            text-align: center;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0px;
+            padding-left: 0px;
+            padding-top: 0px;
+        }
+        input[type="color"] {
+            appearance: none;
+            -webkit-appearance: none;
+            border: none;
+            cursor: pointer;
             width: 100%;
             height: 100%;
+            background-color: rgba(0, 0, 0, 0);
+            padding: 0px;
+            display: flex;
+            flex: 1;
+            text-align: center;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0);
+            overflow: hidden;
+            padding: 0px;
+        }
+        input[type="color"]::-webkit-color-swatch {
+            border: none;
+        }
+        input[type="color"]::-moz-color-swatch {
+            border: none;
         }
     </style>
 </head>
 
 <!----------------------------------------------------------- HTML ------------------------------------------------------------------->
 <body class="all_text">
-    <!---------------------------------------------------- ALL AUDIO ------------------------------------------------------------->
-    <audio id="noise_tv_sound" loop><source src="src/audio/noise_tv_sound.mp3" type="audio/mpeg"></audio>
+    <!---------------------------------------------------- HIDDEN MEDIA ------------------------------------------------------------->
+    <audio id="VIEW_noise_tv_sound" loop><source src="src/audio/noise_tv_sound.mp3" type="audio/mpeg"></audio>
+    <input id="VIEW_image_input" type="file" accept="image/*">
 
     <!--------------------------------------------------- FULL SCREEN ------------------------------------------------------------>
-    <div class="full_screen">  
+    <div class="VIEW_full_screen">  
      
         <div class="corner top-left">
             <!--------------------------------------------- turn off button ------------------------------------------------------>
@@ -168,7 +223,7 @@
                 <p>OFF</p>
             </div>
             <!---------------------------------------------- refresh button ------------------------------------------------------>
-            <div class="item" onclick="reset_background_color_and_image()"">
+            <div class="item" onclick="reset_background_color_and_image()">
                 <img src="src/img/refresh.png"
                      draggable="false"
                      width="20px"
@@ -177,15 +232,13 @@
                 <p>R</p>
             </div>
             <!-------------------------------------- background-color editor button ---------------------------------------------->
-            <div class="item">
-                <div class="cercle-container">
-                    <div id="background_color_editor_button"></div>
-                </div>
+            <div class="item_color">
+                <input id="VIEW_background_color_editor_button" type="color" value="#0000FF">
             </div>
             <!-------------------------------------- background image editor button ---------------------------------------------->
-            <div class="item">
+            <div class="item" id="VIEW_image_input_button">
                 <div class="cercle-container">
-                    <img id="background_image_editor_button"
+                    <img id="VIEW_background_image_editor_button"
                          src=""
                          draggable="false"
                          onload="this.style.display='block'; this.nextElementSibling.style.display='none';" 
@@ -195,7 +248,7 @@
             </div>
             <!--------------------------------------------- play/mute button ----------------------------------------------------->
             <div class="item" onclick="play_mute_all_sound()">
-                <img id="play_mute_all_sound_image"
+                <img id="VIEW_play_mute_all_sound_image"
                      src=""
                      draggable="false"
                      width="20px"
@@ -235,23 +288,30 @@
     <script>
         ///////////////////////////////////////////// DATABASE MANAGER ///////////////////////////////////////////////
 
-        /* We'll secure the database as we develop the application, 
-           but for now, we'll just monitor “true”, “false” & “null”. */
-
         /* We need to monitor everythings the user stores in the database
            and everything we retrieve from the database, including
            "true", "false" & "null", which we should transform into
             true ,  false  &  null , respectivly. */
 
-        function setData(key, value) { localStorage.setItem(key, value); }
-        function getData(key) { return localStorage.getItem(key); }
+         /* We'll secure the database as we develop the application,
+           but for now, we'll just monitor “null”, and some cases */
 
+        function setData(key, value) { localStorage.setItem(key, value); }
+        function getData(key) { 
+            var value = localStorage.getItem(key);
+            if(key === 'STATE_background_image' && value === 'null') { return null; }
+            if(key === 'STATE_background_image_repeat') { return parseInt(value, 10); }
+            if(key === 'STATE_background_image_position_x') { return parseInt(value, 10); }
+            if(key === 'STATE_background_image_position_y') { return parseInt(value, 10); }
+            if(key === 'STATE_background_image_size') { return parseInt(value, 10); }
+            return value;
+        }
         function deleteData(key) { localStorage.removeItem(key); }
    
         ////////////////////////////////////////// TURN SCREEN TO TV NOISE ///////////////////////////////////////////
         function turn_screen_to_noise_tv() {
             //we change windows
-            actualWindows = "noise_windows";
+            STATE_actualWindows = "noise_windows";
 
             //we delete button and replace it by the loader and the message
             document.querySelector('.loading_container').innerHTML = `
@@ -265,19 +325,33 @@
             img.src = 'src/img/noise.gif';
             
             img.onload = function() {
-                document.getElementById("noise_tv_sound").play();
-                document.querySelector('.full_screen').style.backgroundImage = 'url('+img.src+')';
+                if(STATE_actualWindows === "noise_windows") {
+                    VIEW_noise_tv_sound.play();
+                    //we update full_screen ot fit actual windows
+                    VIEW_full_screen.style.backgroundImage = 'url('+img.src+')';
+
+                    VIEW_full_screen.style.backgroundRepeat = 'repeat';
+                    VIEW_full_screen.style.backgroundPositionX = '0px'
+                    VIEW_full_screen.style.backgroundPositionY = '0px'
+                    VIEW_full_screen.style.backgroundSize = LIMIT_BACKGROUND_IMAGE_SIZE_MID+'vh';
+                }
             };
         }
 
         //////////////////////////////////////////// TURN SCREEN TO BLUE TV ///////////////////////////////////////////
         function turn_screen_to_blue_tv() {
             //we change windows
-            actualWindows = "main_windows";
+            STATE_actualWindows = "main_windows";
 
             //we change the fullscreen's background from noise to blue
-            document.getElementById("noise_tv_sound").pause();
-            document.querySelector('.full_screen').style.backgroundImage = background_image ? 'url('+background_image+')' : null;
+            VIEW_noise_tv_sound.pause();
+            //we update full_screen ot fit actual windows
+            VIEW_full_screen.style.backgroundImage = STATE_background_image ? 'url('+STATE_background_image+')' : null;
+
+            VIEW_full_screen.style.backgroundRepeat = TABLE_background_image_repeat[STATE_background_image_repeat];
+            VIEW_full_screen.style.backgroundPositionX = STATE_background_image_position_x+'px';
+            VIEW_full_screen.style.backgroundPositionY = STATE_background_image_position_y+'px';
+            VIEW_full_screen.style.backgroundSize = STATE_background_image_size+'vh';
 
             //we delete the loader and the message we replace them by the button
             document.querySelector('.loading_container').innerHTML = `
@@ -285,49 +359,46 @@
             `;
         }
 
-        //////////////////////////////////////////////// CHANGE BACKGROUND IMAGE ////////////////////////////////////////////////
-
-
         ////////////////////////////////////////////////// PLAY/MUTE ALL SOUND //////////////////////////////////////////////////
         function play_mute_all_sound() {
-            if(all_sound_muted === "true"){
-                all_sound_muted = "false";
-                setData("all_sound_muted", all_sound_muted);
-                document.getElementById('noise_tv_sound').muted = false;
-                document.getElementById('play_mute_all_sound_image').src = "src/img/sound-on.png";
+            if(STATE_all_sound_muted === "true"){
+                STATE_all_sound_muted = "false";
+                setData("STATE_all_sound_muted", STATE_all_sound_muted);
+                VIEW_noise_tv_sound.muted = false;
+                VIEW_play_mute_all_sound_image.src = "src/img/sound-on.png";
             } else {
-                all_sound_muted = "true";
-                setData("all_sound_muted", all_sound_muted);
-                document.getElementById('noise_tv_sound').muted = true;
-                document.getElementById('play_mute_all_sound_image').src = "src/img/sound-off.png";
+                STATE_all_sound_muted = "true";
+                setData("STATE_all_sound_muted", STATE_all_sound_muted);
+                VIEW_noise_tv_sound.muted = true;
+                VIEW_play_mute_all_sound_image.src = "src/img/sound-off.png";
             }
         }
 
         /////////////////////////////////////////////////// TURN OFF APP /////////////////////////////////////////////////////
         function turn_off_app() {
             //we change windows
-            //actualWindows = "main_windows";
+            //STATE_actualWindows = "main_windows";
 
             //we refresh all fullscreen contain from to main windows
-            //document.querySelector('.full_screen').innerHTML = '<div>THE ENTIRE MAIN WINDOWS HERE</div>';
+            //VIEW_full_screen.innerHTML = '<div>THE ENTIRE MAIN WINDOWS HERE</div>';
         }
 
         ///////////////////////////////////////// RESET BACKGROUND COLOR & IMAGE /////////////////////////////////////////////
         function reset_background_color_and_image() {
             //Update var database;
-            background_image_editor_button = "src/img/camera.png";
-            background_color_editor_button = "blue";
-            background_image = null;
+            STATE_background_image_editor_button = "src/img/camera.png";
+            STATE_background_color_editor_button = "#0000FF";
+            STATE_background_image = null;
 
             //update local database;
-            setData("background_image_editor_button", background_image_editor_button);
-            setData("background_color_editor_button", background_color_editor_button);
-            setData("background_image", background_image);
+            setData("STATE_background_image_editor_button", STATE_background_image_editor_button);
+            setData("STATE_background_color_editor_button", STATE_background_color_editor_button);
+            setData("STATE_background_image", STATE_background_image);
 
             //update graphic;
-            document.getElementById('background_image_editor_button').src = background_image_editor_button;
-            document.getElementById('background_color_editor_button').style.backgroundColor = background_color_editor_button;
-            if(actualWindows === "main_windows") document.querySelector('.full_screen').style.backgroundImage = background_image;
+            VIEW_background_image_editor_button.src = STATE_background_image_editor_button;
+            VIEW_background_color_editor_button.style.backgroundColor = STATE_background_color_editor_button;
+            if(STATE_actualWindows === "main_windows") VIEW_full_screen.style.backgroundImage = STATE_background_image;
         }
 
         ////////////////////////////////////////////////// LOCK ZOOM //////////////////////////////////////////////////
@@ -338,32 +409,168 @@
            }, { passive: false });
         document.addEventListener('keydown', function(event) {
             if ( (event.ctrlKey && event.key === '-') || (event.ctrlKey && event.key === '+') ) {
-                noise_tv_sound.play();
+                VIEW_noise_tv_sound.play();
                 event.preventDefault();
             }
-        }, { passive: false });    
+        }, { passive: false });   
 
-        //////////////////////////////////////////////// INITIALISATION ///////////////////////////////////////////////
-        let actualWindows = "main_windows";//main_windows, noise_windows, camera_windows, image_windows
-        let all_sound_muted = getData("all_sound_muted");
+        //////////////////////////////////////////////// LIMITS INITIALISATION ///////////////////////////////////////////////
+        //const LIMIT_UPLOAD_IMAGE_SIZE = 500;
+        const LIMIT_BACKGROUND_IMAGE_SIZE_MID = 30;
+        const LIMIT_BACKGROUND_IMAGE_SIZE_MAX = 10;
+        const LIMIT_BACKGROUND_IMAGE_SIZE_MIN = 100;
+        const LIMIT_BACKGROUND_IMAGE_POSITION_X = 1000;
+        const LIMIT_BACKGROUND_IMAGE_POSITION_Y = 1000;
+        const TABLE_background_image_repeat = ['repeat', 'repeat-x', 'repeat-y', 'no-repeat', 'space', 'round'];
 
-        let background_image_editor_button = getData("background_image_editor_button") ? getData("background_image_editor_button") : "src/img/camera.png";
-        let background_color_editor_button = getData("background_color_editor_button") ? getData("background_color_editor_button") : "blue";
-        let background_image = getData("background_image") ? getData("background_image") : null;
+        //////////////////////////////////////////////// STATES INITIALISATION ///////////////////////////////////////////////
+        let STATE_actualWindows = "main_windows";//main_windows, noise_windows, camera_windows, photo_windows
+        let STATE_all_sound_muted = getData("STATE_all_sound_muted") ? getData("STATE_all_sound_muted") : "false";
+        let STATE_background_image = getData("STATE_background_image") ? getData("STATE_background_image") : null;
+        let STATE_background_image_size = getData("STATE_background_image_size") ? getData("STATE_background_image_size") : LIMIT_BACKGROUND_IMAGE_SIZE_MID;
+        let STATE_background_image_repeat = getData("STATE_background_image_repeat") ? getData("STATE_background_image_repeat") : 0;
+        let STATE_background_image_position_x = getData("STATE_background_image_position_x") ? getData("STATE_background_image_position_x") : 0;
+        let STATE_background_image_position_y = getData("STATE_background_image_position_y") ? getData("STATE_background_image_position_y") : 0;
+        let STATE_background_image_editor_button = getData("STATE_background_image_editor_button") ? getData("STATE_background_image_editor_button") : "src/img/camera.png";
+        let STATE_background_color_editor_button = getData("STATE_background_color_editor_button") ? getData("STATE_background_color_editor_button") : "#0000FF";
 
-        ///////////////////////////////////////////////// FIRST EXECUTION //////////////////////////////////////////////////////
-        (function first_execution() {
-            if(all_sound_muted === "true"){
-                document.getElementById('noise_tv_sound').muted = true;
-                document.getElementById('play_mute_all_sound_image').src = "src/img/sound-off.png";
+        ///////////////////////////////////////////////// VIEWS INITIALISATION //////////////////////////////////////////////////
+        let VIEW_full_screen = document.querySelector('.VIEW_full_screen');
+        let VIEW_noise_tv_sound = document.getElementById('VIEW_noise_tv_sound');
+        let VIEW_play_mute_all_sound_image = document.getElementById('VIEW_play_mute_all_sound_image');
+        let VIEW_background_image_editor_button = document.getElementById('VIEW_background_image_editor_button');
+        let VIEW_background_color_editor_button = document.getElementById('VIEW_background_color_editor_button');
+        let VIEW_image_input_button = document.getElementById('VIEW_image_input_button');
+        let VIEW_image_input = document.getElementById('VIEW_image_input');
+
+        //////////////////////////////////////////////// UPDATE BACKGROUND IMAGE ////////////////////////////////////////////////
+        VIEW_image_input_button.addEventListener('click', function() {
+            VIEW_image_input.click();
+        });
+        VIEW_image_input.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    STATE_background_image = STATE_background_image_editor_button = VIEW_background_image_editor_button.src = e.target.result;
+                    
+                    if(STATE_actualWindows === "main_windows") { 
+                        VIEW_full_screen.style.backgroundImage = 'url('+STATE_background_image+')';
+                    }
+                    
+                    setData("STATE_background_image_editor_button", STATE_background_image_editor_button);
+                    setData("STATE_background_image", STATE_background_image);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        ///////////////////////////////////////////// UPDATE BACKGROUND IMAGE REPEAT //////////////////////////////////////////// 
+        VIEW_full_screen.addEventListener("dblclick", function(event) {
+            if (STATE_actualWindows === "main_windows" && event.target === this) {
+                STATE_background_image_repeat = (STATE_background_image_repeat + 1) % TABLE_background_image_repeat.length;
+                setData("STATE_background_image_repeat", STATE_background_image_repeat);
+                VIEW_full_screen.style.backgroundRepeat = TABLE_background_image_repeat[STATE_background_image_repeat];
+            }
+        });
+
+        ////////////////////////////////////////////// UPDATE BACKGROUND IMAGE SIZE ////////////////////////////////////////////// 
+        let S_bg_i_z = STATE_background_image_size;
+        VIEW_full_screen.addEventListener('wheel', function(event) {
+            if (STATE_actualWindows === "main_windows" && event.target === this) {
+                if (event.deltaY < 0) {
+                    // Wheel up
+                    S_bg_i_z += 10;
+                } else {
+                    // Wheel down
+                    S_bg_i_z -= 10;
+                }
+                // Ensure the background size stays within reasonable bounds
+                S_bg_i_z = Math.max(20, Math.min(100, S_bg_i_z));
+                STATE_background_image_size = S_bg_i_z;
+                setData("STATE_background_image_size", STATE_background_image_size);
+                VIEW_full_screen.style.backgroundSize = STATE_background_image_size+'vh';
+            }
+        });
+
+        /////////////////////////////////////////// UPDATE BACKGROUND IMAGE POSITION //////////////////////////////////////////////
+        const background = document.getElementById('background');
+
+        let isMouseDown = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        background.addEventListener('mousedown', (e) => {
+            isMouseDown = true;
+            lastX = e.clientX;
+            lastY = e.clientY;
+        });
+
+        background.addEventListener('mouseup', () => {
+            isMouseDown = false;
+        });
+
+        background.addEventListener('mouseleave', () => {
+            isMouseDown = false;
+        });
+
+        document.addEventListener('mouseout', (e) => {
+            if (!e.relatedTarget || e.relatedTarget.nodeName === "HTML") {
+                isMouseDown = false;
+            }
+        });
+
+        background.addEventListener('mousemove', (e) => {
+            if (isMouseDown) {
+                const deltaX = e.clientX - lastX;
+                const deltaY = e.clientY - lastY;
+
+                const currentPosX = parseInt(background.style.backgroundPositionX || 0);
+                const currentPosY = parseInt(background.style.backgroundPositionY || 0);
+
+                //const centerX = window.innerWidth / 2;
+                //const centerY = window.innerHeight / 2;
+
+                const centerX = window.innerWidth;
+                const centerY = window.innerHeight;
+
+                const newPosX = Math.min(Math.max(currentPosX + deltaX, -centerX), centerX);
+                const newPosY = Math.min(Math.max(currentPosY + deltaY, -centerY), centerY);
+
+                background.style.backgroundPositionX = `${newPosX}px`;
+                background.style.backgroundPositionY = `${newPosY}px`;
+
+                lastX = e.clientX;
+                lastY = e.clientY;
+            }
+        });
+
+        //////////////////////////////////////////////// UPDATE BACKGROUND COLOR ////////////////////////////////////////////////
+        VIEW_background_color_editor_button.addEventListener('input', () => {
+            STATE_background_color_editor_button = VIEW_full_screen.style.backgroundColor = VIEW_background_color_editor_button.value;
+            setData("STATE_background_color_editor_button", STATE_background_color_editor_button);
+        });
+
+        ////////////////////////////////////////////////// FIRST EXECUTION //////////////////////////////////////////////////////
+        (function() {
+            if(STATE_all_sound_muted === "true"){
+                VIEW_noise_tv_sound.muted = true;
+                VIEW_play_mute_all_sound_image.src = "src/img/sound-off.png";
             } else {
-                document.getElementById('noise_tv_sound').muted = false;
-                document.getElementById('play_mute_all_sound_image').src = "src/img/sound-on.png";
+                VIEW_noise_tv_sound.muted = false;
+                VIEW_play_mute_all_sound_image.src = "src/img/sound-on.png";
             }
 
-            document.getElementById('background_image_editor_button').src = background_image_editor_button;
-            document.getElementById('background_color_editor_button').style.backgroundColor = background_color_editor_button;
-            document.querySelector('.full_screen').style.backgroundImage = background_image ? 'url('+background_image+')' : null;
+            VIEW_background_image_editor_button.src = STATE_background_image_editor_button;
+            VIEW_background_color_editor_button.value = STATE_background_color_editor_button;
+
+            VIEW_full_screen.style.backgroundImage = STATE_background_image ? 'url('+STATE_background_image+')' : null;
+            VIEW_full_screen.style.backgroundColor = STATE_background_color_editor_button;
+
+            VIEW_full_screen.style.backgroundRepeat = TABLE_background_image_repeat[STATE_background_image_repeat];
+            VIEW_full_screen.style.backgroundPositionX = STATE_background_image_position_x+'px';
+            VIEW_full_screen.style.backgroundPositionY = STATE_background_image_position_y+'px';
+            VIEW_full_screen.style.backgroundSize = STATE_background_image_size+'vh';
         })();
     </script>
 </body>
