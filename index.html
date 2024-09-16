@@ -6,7 +6,7 @@
     <title>happy32xCAM</title>
     <link rel="icon" type="image/x-icon" href="src/img/camera.ico">
 
-<!----------------------------------------------------------- CSS --------------------------------------------------------------------->
+<!----------------------------------------------------------- CSS -------------------------------------------------------------------->
     <style>
         #VIEW_image_input {
             display: none;
@@ -205,15 +205,15 @@
 
 <!----------------------------------------------------------- HTML ------------------------------------------------------------------->
 <body class="all_text">
-    <!---------------------------------------------------- HIDDEN MEDIA ------------------------------------------------------------->
+    <!---------------------------------------------------- HIDDEN MEDIA -------------------------------------------------------------->
     <audio id="VIEW_noise_tv_sound" loop><source src="src/audio/noise_tv_sound.mp3" type="audio/mpeg"></audio>
     <input id="VIEW_image_input" type="file" accept="image/*">
 
-    <!--------------------------------------------------- FULL SCREEN ------------------------------------------------------------>
+    <!---------------------------------------------------- FULL SCREEN --------------------------------------------------------------->
     <div class="VIEW_full_screen">  
      
         <div class="corner top-left">
-            <!--------------------------------------------- turn off button ------------------------------------------------------>
+            <!------------------------------------------ turn off button ------------------------------------------------------------->
             <div class="item">
                 <img src="src/img/turn-off.png"
                      draggable="false"
@@ -222,7 +222,7 @@
                      onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                 <p>OFF</p>
             </div>
-            <!---------------------------------------------- refresh button ------------------------------------------------------>
+            <!---------------------------------------------- refresh button ---------------------------------------------------------->
             <div class="item" onclick="reset_background_color_and_image()">
                 <img src="src/img/refresh.png"
                      draggable="false"
@@ -231,11 +231,11 @@
                      onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                 <p>R</p>
             </div>
-            <!-------------------------------------- background-color editor button ---------------------------------------------->
+            <!-------------------------------------- background-color editor button -------------------------------------------------->
             <div class="item_color">
                 <input id="VIEW_background_color_editor_button" type="color" value="#0000FF">
             </div>
-            <!-------------------------------------- background image editor button ---------------------------------------------->
+            <!-------------------------------------- background image editor button -------------------------------------------------->
             <div class="item" id="VIEW_image_input_button">
                 <div class="cercle-container">
                     <img id="VIEW_background_image_editor_button"
@@ -246,7 +246,7 @@
                     <p>BG</p>
                 </div>
             </div>
-            <!--------------------------------------------- play/mute button ----------------------------------------------------->
+            <!--------------------------------------------- play/mute button --------------------------------------------------------->
             <div class="item" onclick="play_mute_all_sound()">
                 <img id="VIEW_play_mute_all_sound_image"
                      src=""
@@ -258,10 +258,10 @@
             </div>
         </div>
 
-        <!-------------------------------------- go to github REPO ---------------------------------------------->
+        <!-------------------------------------- go to github REPO ------------------------------------------------------------------>
         <div class="corner top-right"><a href="https://github.com/happy32x/happy32xCAM" target="_blank">happy32xCAM></a></div>
 
-        <!----------------------------------- get app's all shortcut key ------------------------------------------>
+        <!----------------------------------- get app's all shortcut key ------------------------------------------------------------>
         <div class="corner bottom-left">
             <div class="item_info">
                 <img src="src/img/info.png" 
@@ -273,7 +273,7 @@
             </div>
         </div>
 
-        <!----------------------------------- display images taken by user ------------------------------------------>
+        <!----------------------------------- display images taken by user -------------------------------------------------------->
         <!-- <div class="corner bottom-right">happy32xCAM</div> -->
 
         <!----------------------------------------------- LOADING CONTAINER-------------------------------------------------------->
@@ -284,9 +284,9 @@
         </div>
     </div>
 
- <!---------------------------------------------------------- SCRIPT ------------------------------------------------------------------>   
+ <!---------------------------------------------------------- SCRIPT -------------------------------------------------------------->   
     <script>
-        ///////////////////////////////////////////// DATABASE MANAGER ///////////////////////////////////////////////
+        ///////////////////////////////////////////// DATABASE MANAGER ///////////////////////////////////////////////////////////
 
         /* We need to monitor everythings the user stores in the database
            and everything we retrieve from the database, including
@@ -308,7 +308,7 @@
         }
         function deleteData(key) { localStorage.removeItem(key); }
    
-        ////////////////////////////////////////// TURN SCREEN TO TV NOISE ///////////////////////////////////////////
+        ////////////////////////////////////////// TURN SCREEN TO TV NOISE ///////////////////////////////////////////////////////
         function turn_screen_to_noise_tv() {
             //we change windows
             STATE_actualWindows = "noise_windows";
@@ -338,7 +338,7 @@
             };
         }
 
-        //////////////////////////////////////////// TURN SCREEN TO BLUE TV ///////////////////////////////////////////
+        ///////////////////////////////////////////////// TURN SCREEN TO BLUE TV //////////////////////////////////////////////////
         function turn_screen_to_blue_tv() {
             //we change windows
             STATE_actualWindows = "main_windows";
@@ -348,7 +348,7 @@
             //we update full_screen ot fit actual windows
             VIEW_full_screen.style.backgroundImage = STATE_background_image ? 'url('+STATE_background_image+')' : null;
 
-            VIEW_full_screen.style.backgroundRepeat = TABLE_background_image_repeat[STATE_background_image_repeat];
+            VIEW_full_screen.style.backgroundRepeat = TABLE_BACKGROUND_IMAGE_REPEAT[STATE_background_image_repeat];
             VIEW_full_screen.style.backgroundPositionX = STATE_background_image_position_x+'px';
             VIEW_full_screen.style.backgroundPositionY = STATE_background_image_position_y+'px';
             VIEW_full_screen.style.backgroundSize = STATE_background_image_size+'vh';
@@ -359,22 +359,22 @@
             `;
         }
 
-        ////////////////////////////////////////////////// PLAY/MUTE ALL SOUND //////////////////////////////////////////////////
+        ////////////////////////////////////////////////// PLAY/MUTE ALL SOUND ////////////////////////////////////////////////////
         function play_mute_all_sound() {
             if(STATE_all_sound_muted === "true"){
                 STATE_all_sound_muted = "false";
-                setData("STATE_all_sound_muted", STATE_all_sound_muted);
                 VIEW_noise_tv_sound.muted = false;
                 VIEW_play_mute_all_sound_image.src = "src/img/sound-on.png";
+                setData("STATE_all_sound_muted", STATE_all_sound_muted);
             } else {
                 STATE_all_sound_muted = "true";
-                setData("STATE_all_sound_muted", STATE_all_sound_muted);
                 VIEW_noise_tv_sound.muted = true;
                 VIEW_play_mute_all_sound_image.src = "src/img/sound-off.png";
+                setData("STATE_all_sound_muted", STATE_all_sound_muted);
             }
         }
 
-        /////////////////////////////////////////////////// TURN OFF APP /////////////////////////////////////////////////////
+        /////////////////////////////////////////////////// TURN OFF APP /////////////////////////////////////////////////////////
         function turn_off_app() {
             //we change windows
             //STATE_actualWindows = "main_windows";
@@ -383,51 +383,39 @@
             //VIEW_full_screen.innerHTML = '<div>THE ENTIRE MAIN WINDOWS HERE</div>';
         }
 
-        ///////////////////////////////////////// RESET BACKGROUND COLOR & IMAGE /////////////////////////////////////////////
+        //////////////////////////////////////////// RESET BACKGROUND COLOR & IMAGE //////////////////////////////////////////////
         function reset_background_color_and_image() {
-            //Update var database;
+            //STATE
             STATE_background_image_editor_button = "src/img/camera.png";
             STATE_background_color_editor_button = "#0000FF";
             STATE_background_image = null;
 
-            //update local database;
-            setData("STATE_background_image_editor_button", STATE_background_image_editor_button);
-            setData("STATE_background_color_editor_button", STATE_background_color_editor_button);
-            setData("STATE_background_image", STATE_background_image);
-
-            //update graphic;
+            //VIEW
             VIEW_background_image_editor_button.src = STATE_background_image_editor_button;
             VIEW_background_color_editor_button.style.backgroundColor = STATE_background_color_editor_button;
             if(STATE_actualWindows === "main_windows") VIEW_full_screen.style.backgroundImage = STATE_background_image;
-        }
 
-        ////////////////////////////////////////////////// LOCK ZOOM //////////////////////////////////////////////////
-        document.addEventListener('wheel', function(event) {
-             if (event.ctrlKey) {
-                event.preventDefault();
-             }
-           }, { passive: false });
-        document.addEventListener('keydown', function(event) {
-            if ( (event.ctrlKey && event.key === '-') || (event.ctrlKey && event.key === '+') ) {
-                VIEW_noise_tv_sound.play();
-                event.preventDefault();
-            }
-        }, { passive: false });   
+            //DATA
+            setData("STATE_background_image_editor_button", STATE_background_image_editor_button);
+            setData("STATE_background_color_editor_button", STATE_background_color_editor_button);
+            setData("STATE_background_image", STATE_background_image);
+        }  
 
-        //////////////////////////////////////////////// LIMITS INITIALISATION ///////////////////////////////////////////////
+        //////////////////////////////////////////////// LIMITS INITIALISATION //////////////////////////////////////////////////
         //const LIMIT_UPLOAD_IMAGE_SIZE = 500;
         const LIMIT_BACKGROUND_IMAGE_SIZE_MID = 30;
-        const LIMIT_BACKGROUND_IMAGE_SIZE_MAX = 10;
-        const LIMIT_BACKGROUND_IMAGE_SIZE_MIN = 100;
-        const LIMIT_BACKGROUND_IMAGE_POSITION_X = 1000;
-        const LIMIT_BACKGROUND_IMAGE_POSITION_Y = 1000;
-        const TABLE_background_image_repeat = ['repeat', 'repeat-x', 'repeat-y', 'no-repeat', 'space', 'round'];
+        const LIMIT_BACKGROUND_IMAGE_SIZE_MIN = 20;
+        const LIMIT_BACKGROUND_IMAGE_SIZE_MAX = 100;
+        const TABLE_BACKGROUND_IMAGE_REPEAT = ['repeat', 'repeat-x', 'repeat-y', 'no-repeat', 'space', 'round'];
 
-        //////////////////////////////////////////////// STATES INITIALISATION ///////////////////////////////////////////////
+        //////////////////////////////////////////////// STATES INITIALISATION //////////////////////////////////////////////////
         let STATE_actualWindows = "main_windows";//main_windows, noise_windows, camera_windows, photo_windows
         let STATE_all_sound_muted = getData("STATE_all_sound_muted") ? getData("STATE_all_sound_muted") : "false";
         let STATE_background_image = getData("STATE_background_image") ? getData("STATE_background_image") : null;
         let STATE_background_image_size = getData("STATE_background_image_size") ? getData("STATE_background_image_size") : LIMIT_BACKGROUND_IMAGE_SIZE_MID;
+        let STATE_background_image_raw_size_x = getData("STATE_background_image_raw_size_x") ? getData("STATE_background_image_raw_size_x") : 0;
+        let STATE_background_image_raw_size_y = getData("STATE_background_image_raw_size_y") ? getData("STATE_background_image_raw_size_y") : 0;
+        let STATE_background_image_raw_ratio = getData("STATE_background_image_raw_ratio") ? getData("STATE_background_image_raw_ratio") : 0;
         let STATE_background_image_repeat = getData("STATE_background_image_repeat") ? getData("STATE_background_image_repeat") : 0;
         let STATE_background_image_position_x = getData("STATE_background_image_position_x") ? getData("STATE_background_image_position_x") : 0;
         let STATE_background_image_position_y = getData("STATE_background_image_position_y") ? getData("STATE_background_image_position_y") : 0;
@@ -443,6 +431,39 @@
         let VIEW_image_input_button = document.getElementById('VIEW_image_input_button');
         let VIEW_image_input = document.getElementById('VIEW_image_input');
 
+        ////////////////////////////////////// BACKGROUND IMAGE HANDLER INITIALISATION ////////////////////////////////////////
+        let BGI_isMounted = STATE_background_image ? true : false;
+        let BGI_isMouseDown = false;
+        let BGI_lastX = 0;
+        let BGI_lastY = 0;
+        let BGI_size = STATE_background_image_size;
+
+        let BGI_size_px_value = (STATE_background_image_size*window.innerHeight) / 100;
+        let BGI_size_x = BGI_size_px_value;
+        let BGI_size_y = BGI_size_x/STATE_background_image_raw_ratio;
+
+        //////////////////////////////////////////////////// LOCK ZOOM /////////////////////////////////////////////////////////
+        document.addEventListener('wheel', function(event) {
+             if (event.ctrlKey) {
+                event.preventDefault();
+             }
+           }, { passive: false });
+        document.addEventListener('keydown', function(event) {
+            if ( (event.ctrlKey && event.key === '-') || (event.ctrlKey && event.key === '+') ) {
+                VIEW_noise_tv_sound.play();
+                event.preventDefault();
+            }
+        }, { passive: false }); 
+
+        //////////////////////////////////////////////// WINDOWS SIZE LISTENER //////////////////////////////////////////////////
+        window.addEventListener('resize', function() {
+            if (BGI_isMounted) {
+                BGI_size_px_value = (STATE_background_image_size*window.innerHeight) / 100;
+                BGI_size_x = BGI_size_px_value;
+                BGI_size_y = BGI_size_x/STATE_background_image_raw_ratio;
+            }
+        });
+
         //////////////////////////////////////////////// UPDATE BACKGROUND IMAGE ////////////////////////////////////////////////
         VIEW_image_input_button.addEventListener('click', function() {
             VIEW_image_input.click();
@@ -452,96 +473,149 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    STATE_background_image = STATE_background_image_editor_button = VIEW_background_image_editor_button.src = e.target.result;
-                    
-                    if(STATE_actualWindows === "main_windows") { 
-                        VIEW_full_screen.style.backgroundImage = 'url('+STATE_background_image+')';
-                    }
-                    
-                    setData("STATE_background_image_editor_button", STATE_background_image_editor_button);
-                    setData("STATE_background_image", STATE_background_image);
+                    const img = new Image();
+                    img.onload = function() {
+
+                        //BACKGROUND IMAGE HANDLER IS INITIALISED
+                        BGI_isMounted = true;
+
+                        //STATE
+                        STATE_background_image = img.src;
+                        STATE_background_image_editor_button = img.src;
+                        STATE_background_image_raw_size_x = img.width;
+                        STATE_background_image_raw_size_y = img.height;
+                        STATE_background_image_raw_ratio = img.width/img.height;
+
+                        //UPDATE BGI_size_y base on new background_image_raw_ratio
+                        BGI_size_y = BGI_size_x/STATE_background_image_raw_ratio;
+
+                        //VIEW
+                        VIEW_background_image_editor_button.src = STATE_background_image_editor_button;
+                        if(STATE_actualWindows === "main_windows") VIEW_full_screen.style.backgroundImage = 'url('+STATE_background_image+')';
+
+                        //DATA
+                        setData("STATE_background_image_editor_button", STATE_background_image_editor_button);
+                        setData("STATE_background_image", STATE_background_image);
+                        setData("STATE_background_image_raw_size_x", STATE_background_image_raw_size_x);
+                        setData("STATE_background_image_raw_size_y", STATE_background_image_raw_size_y);
+                        setData("STATE_background_image_raw_ratio", STATE_background_image_raw_ratio);
+
+                    };
+                    img.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
             }
         });
 
+        /*VIEW_image_input.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const imageInfo = document.getElementById('imageInfo');
+                        imageInfo.innerHTML = `
+                            <p>URL: ${img.src}</p>
+                            <p>Width: ${img.width}px</p>
+                            <p>Height: ${img.height}px</p>
+                        `;
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });*/
+
         ///////////////////////////////////////////// UPDATE BACKGROUND IMAGE REPEAT //////////////////////////////////////////// 
         VIEW_full_screen.addEventListener("dblclick", function(event) {
-            if (STATE_actualWindows === "main_windows" && event.target === this) {
-                STATE_background_image_repeat = (STATE_background_image_repeat + 1) % TABLE_background_image_repeat.length;
-                setData("STATE_background_image_repeat", STATE_background_image_repeat);
-                VIEW_full_screen.style.backgroundRepeat = TABLE_background_image_repeat[STATE_background_image_repeat];
-            }
-        });
-
-        ////////////////////////////////////////////// UPDATE BACKGROUND IMAGE SIZE ////////////////////////////////////////////// 
-        let S_bg_i_z = STATE_background_image_size;
-        VIEW_full_screen.addEventListener('wheel', function(event) {
-            if (STATE_actualWindows === "main_windows" && event.target === this) {
-                if (event.deltaY < 0) {
-                    // Wheel up
-                    S_bg_i_z += 10;
-                } else {
-                    // Wheel down
-                    S_bg_i_z -= 10;
+            if (BGI_isMounted) {
+                if (STATE_actualWindows === "main_windows" && event.target === this) {
+                    STATE_background_image_repeat = (STATE_background_image_repeat + 1) % TABLE_BACKGROUND_IMAGE_REPEAT.length;
+                    VIEW_full_screen.style.backgroundRepeat = TABLE_BACKGROUND_IMAGE_REPEAT[STATE_background_image_repeat];
+                    setData("STATE_background_image_repeat", STATE_background_image_repeat);
                 }
-                // Ensure the background size stays within reasonable bounds
-                S_bg_i_z = Math.max(20, Math.min(100, S_bg_i_z));
-                STATE_background_image_size = S_bg_i_z;
-                setData("STATE_background_image_size", STATE_background_image_size);
-                VIEW_full_screen.style.backgroundSize = STATE_background_image_size+'vh';
             }
         });
 
-        /////////////////////////////////////////// UPDATE BACKGROUND IMAGE POSITION //////////////////////////////////////////////
-        const background = document.getElementById('background');
+        ////////////////////////////////////////////// UPDATE BACKGROUND IMAGE SIZE ///////////////////////////////////////////// 
+        VIEW_full_screen.addEventListener('wheel', function(event) {
+            if (BGI_isMounted) {
+                if (STATE_actualWindows === "main_windows" && event.target === this) {
+                    if (event.deltaY < 0) {
+                        // Wheel up
+                        BGI_size += 10;
+                    } else {
+                        // Wheel down
+                        BGI_size -= 10;
+                    }
+                    // Ensure the background size stays within reasonable bounds
+                    BGI_size = Math.max(LIMIT_BACKGROUND_IMAGE_SIZE_MIN, Math.min(LIMIT_BACKGROUND_IMAGE_SIZE_MAX, BGI_size));
 
-        let isMouseDown = false;
-        let lastX = 0;
-        let lastY = 0;
+                    STATE_background_image_size = BGI_size;
+                    VIEW_full_screen.style.backgroundSize = STATE_background_image_size+'vh';
+                    setData("STATE_background_image_size", STATE_background_image_size);
 
-        background.addEventListener('mousedown', (e) => {
-            isMouseDown = true;
-            lastX = e.clientX;
-            lastY = e.clientY;
+                    BGI_size_px_value = (STATE_background_image_size*window.innerHeight) / 100;
+                    BGI_size_x = BGI_size_px_value;
+                    BGI_size_y = BGI_size_x/STATE_background_image_raw_ratio;
+                }
+            }
         });
 
-        background.addEventListener('mouseup', () => {
-            isMouseDown = false;
+        /////////////////////////////////////////// UPDATE BACKGROUND IMAGE POSITION ///////////////////////////////////////////
+        VIEW_full_screen.addEventListener('mousedown', (e) => {
+            if (BGI_isMounted) {
+                BGI_isMouseDown = true;
+                BGI_lastX = e.clientX;
+                BGI_lastY = e.clientY;
+            }
         });
 
-        background.addEventListener('mouseleave', () => {
-            isMouseDown = false;
+        VIEW_full_screen.addEventListener('mouseup', () => {
+            if (BGI_isMounted) BGI_isMouseDown = false;
+        });
+
+        VIEW_full_screen.addEventListener('mouseleave', () => {
+            if (BGI_isMounted) BGI_isMouseDown = false;
         });
 
         document.addEventListener('mouseout', (e) => {
-            if (!e.relatedTarget || e.relatedTarget.nodeName === "HTML") {
-                isMouseDown = false;
+            if (BGI_isMounted) {
+                if (!e.relatedTarget || e.relatedTarget.nodeName === "HTML") {
+                    BGI_isMouseDown = false;
+                }
             }
         });
 
-        background.addEventListener('mousemove', (e) => {
-            if (isMouseDown) {
-                const deltaX = e.clientX - lastX;
-                const deltaY = e.clientY - lastY;
+        VIEW_full_screen.addEventListener('mousemove', (e) => {
+            if (BGI_isMounted) {
+                if (BGI_isMouseDown) {
+                    const deltaX = e.clientX - BGI_lastX;
+                    const deltaY = e.clientY - BGI_lastY;
 
-                const currentPosX = parseInt(background.style.backgroundPositionX || 0);
-                const currentPosY = parseInt(background.style.backgroundPositionY || 0);
+                    const currentPosX = parseInt(VIEW_full_screen.style.backgroundPositionX || 0);
+                    const currentPosY = parseInt(VIEW_full_screen.style.backgroundPositionY || 0);
 
-                //const centerX = window.innerWidth / 2;
-                //const centerY = window.innerHeight / 2;
+                    //const centerX = window.innerWidth / 2;
+                    //const centerY = window.innerHeight / 2;
+                    const centerX = window.innerWidth;
+                    const centerY = window.innerHeight;
 
-                const centerX = window.innerWidth;
-                const centerY = window.innerHeight;
+                    const pre_newPosX = Math.min(Math.max(currentPosX + deltaX, -centerX), centerX);
+                    const pre_newPosY = Math.min(Math.max(currentPosY + deltaY, -centerY), centerY);
 
-                const newPosX = Math.min(Math.max(currentPosX + deltaX, -centerX), centerX);
-                const newPosY = Math.min(Math.max(currentPosY + deltaY, -centerY), centerY);
+                    const newPosX = pre_newPosX < -BGI_size_x ? -BGI_size_x : pre_newPosX;
+                    const newPosY = pre_newPosY < -BGI_size_y ? -BGI_size_y : pre_newPosY;
+                    //console.log(`newPosX : ${newPosX}`);
+                    //console.log(`newPosY : ${newPosY}`);
 
-                background.style.backgroundPositionX = `${newPosX}px`;
-                background.style.backgroundPositionY = `${newPosY}px`;
+                    VIEW_full_screen.style.backgroundPositionX = `${newPosX}px`;
+                    VIEW_full_screen.style.backgroundPositionY = `${newPosY}px`;
 
-                lastX = e.clientX;
-                lastY = e.clientY;
+                    BGI_lastX = e.clientX;
+                    BGI_lastY = e.clientY;
+                }
             }
         });
 
@@ -567,7 +641,7 @@
             VIEW_full_screen.style.backgroundImage = STATE_background_image ? 'url('+STATE_background_image+')' : null;
             VIEW_full_screen.style.backgroundColor = STATE_background_color_editor_button;
 
-            VIEW_full_screen.style.backgroundRepeat = TABLE_background_image_repeat[STATE_background_image_repeat];
+            VIEW_full_screen.style.backgroundRepeat = TABLE_BACKGROUND_IMAGE_REPEAT[STATE_background_image_repeat];
             VIEW_full_screen.style.backgroundPositionX = STATE_background_image_position_x+'px';
             VIEW_full_screen.style.backgroundPositionY = STATE_background_image_position_y+'px';
             VIEW_full_screen.style.backgroundSize = STATE_background_image_size+'vh';
