@@ -8,6 +8,44 @@
 
 <!----------------------------------------------------------- CSS -------------------------------------------------------------------->
     <style>
+        /*********** GitHub Link **********/
+        .github-link-vertical-text {
+            writing-mode: horizontal-tb; /* Par défaut */
+        }
+        @media screen and (max-width: 360px) {
+        .github-link-vertical-text {
+            writing-mode: vertical-rl; 
+        }
+        }
+
+        /*********** MODAL **********/
+        #turn_app_off_button___modal {
+            z-index: 9999;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .turn_app_off_button___modal_content {
+            background: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .turn_app_off_button___modal_buttons {
+            margin-top: 15px;
+        }
+        .turn_app_off_button___modal_buttons button {
+            margin: 0 10px;
+        }
+
+        /*********** VIEW **********/
         #VIEW_image_input {
             display: none;
         }
@@ -32,6 +70,7 @@
             -ms-user-select: none;     /* Internet Explorer/Edge */
             user-select: none;         /* Standard */
         }
+
         .VIEW_full_screen {
             height: 100vh;
             width: 100vw;
@@ -80,10 +119,18 @@
             font-family: "Lucida Console";
         }
         .corner {
-            position: absolute;
+            position: fixed;
             padding: 3px;
             color: white;
             background-color: rgb(0, 0, 0, 0.4);
+        }
+        .bottom-left {
+            bottom: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            background-color: rgba(0, 0, 0, 0);
         }
         .top-left {
             top: 0;
@@ -98,13 +145,6 @@
             right: 0;
             padding: 3px;
             padding-left: 5px;
-        }
-        .bottom-left {
-            bottom: 0;
-            left: 0;
-            display: flex;
-            justify-content: center;
-            background-color: rgba(0, 0, 0, 0);
         }
         .bottom-right {
             bottom: 0;
@@ -209,12 +249,23 @@
     <audio id="VIEW_noise_tv_sound" loop><source src="src/audio/noise_tv_sound.mp3" type="audio/mpeg"></audio>
     <input id="VIEW_image_input" type="file" accept="image/*">
 
+    <!------------------------------------------------------ ALL MODAL --------------------------------------------------------------->
+    <div id="turn_app_off_button___modal">
+        <div class="turn_app_off_button___modal_content">
+            <p>Are you sure you want to continue ?</p>
+            <div class="turn_app_off_button___modal_buttons">
+                <button id="turn_app_off_button___no_Button">No</button>
+                <button id="turn_app_off_button___yes_Button">Yes</button>
+            </div>
+        </div>
+    </div>
+
     <!---------------------------------------------------- FULL SCREEN --------------------------------------------------------------->
     <div class="VIEW_full_screen">  
      
         <div class="corner top-left">
-            <!------------------------------------------ turn off button ------------------------------------------------------------->
-            <div class="item">
+            <!---------------------------------------- turn app off button ----------------------------------------------------------->
+            <div class="item" id="turn_app_off_button">
                 <img src="src/img/turn-off.png"
                      draggable="false"
                      width="20px"
@@ -259,10 +310,20 @@
         </div>
 
         <!-------------------------------------- go to github REPO ------------------------------------------------------------------>
-        <div class="corner top-right"><a href="https://github.com/happy32x/happy32xCAM" target="_blank">happy32xCAM></a></div>
+        <div class="corner top-right">
+            <a href="https://github.com/happy32x/happy32xCAM" class="github-link-vertical-text" target="_blank">happy32xCAM></a>
+        </div>
 
-        <!----------------------------------- get app's all shortcut key ------------------------------------------------------------>
+        <!------------------------------- display/hide option & parameters ---------------------------------------------------------->
         <div class="corner bottom-left">
+            <div class="item_info">
+                <img src="src/img/info.png" 
+                     draggable="false" 
+                     width="20px"
+                     onload="this.style.display='block'; this.nextElementSibling.style.display='none';" 
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <p>i</p>
+            </div>
             <div class="item_info">
                 <img src="src/img/info.png" 
                      draggable="false" 
@@ -374,31 +435,55 @@
             }
         }
 
-        /////////////////////////////////////////////////// TURN OFF APP /////////////////////////////////////////////////////////
-        function turn_off_app() {
-            //we change windows
-            //STATE_actualWindows = "main_windows";
-
-            //we refresh all fullscreen contain from to main windows
-            //VIEW_full_screen.innerHTML = '<div>THE ENTIRE MAIN WINDOWS HERE</div>';
-        }
-
         //////////////////////////////////////////// RESET BACKGROUND COLOR & IMAGE //////////////////////////////////////////////
         function reset_background_color_and_image() {
+
             //STATE
+            STATE_background_image = null;  
+            STATE_background_image_size = LIMIT_BACKGROUND_IMAGE_SIZE_MID;
+            STATE_background_image_raw_size_x = 0;
+            STATE_background_image_raw_size_y = 0;
+            STATE_background_image_raw_ratio = 0;
+            STATE_background_image_repeat = 0;
+            STATE_background_image_position_x = 0;
+            STATE_background_image_position_y = 0;
             STATE_background_image_editor_button = "src/img/camera.png";
             STATE_background_color_editor_button = "#0000FF";
-            STATE_background_image = null;
+
+            //BGI
+            BGI_isMounted = STATE_background_image ? true : false;
+            BGI_isMouseDown = false;
+            BGI_lastX = 0;
+            BGI_lastY = 0;
+            BGI_size = STATE_background_image_size;
+            BGI_size_px_value = (STATE_background_image_size*window.innerHeight) / 100;
+            BGI_size_x = BGI_size_px_value;
+            BGI_size_y = BGI_size_x/STATE_background_image_raw_ratio;
 
             //VIEW
+            VIEW_image_input.value = '';
+            VIEW_background_color_editor_button.value = STATE_background_color_editor_button;
             VIEW_background_image_editor_button.src = STATE_background_image_editor_button;
-            VIEW_background_color_editor_button.style.backgroundColor = STATE_background_color_editor_button;
-            if(STATE_actualWindows === "main_windows") VIEW_full_screen.style.backgroundImage = STATE_background_image;
-
+            if(STATE_actualWindows === "main_windows") {
+                VIEW_full_screen.style.backgroundImage = STATE_background_image;
+                VIEW_full_screen.style.backgroundColor = STATE_background_color_editor_button;
+            }
+            VIEW_full_screen.style.backgroundRepeat = TABLE_BACKGROUND_IMAGE_REPEAT[STATE_background_image_repeat];
+            VIEW_full_screen.style.backgroundPositionX = STATE_background_image_position_x+'px';
+            VIEW_full_screen.style.backgroundPositionY = STATE_background_image_position_y+'px';
+            VIEW_full_screen.style.backgroundSize = STATE_background_image_size+'vh';
+        
             //DATA
+            setData("STATE_background_image", STATE_background_image);
+            setData("STATE_background_image_size", STATE_background_image_size);
+            setData("STATE_background_image_raw_size_x", STATE_background_image_raw_size_x);
+            setData("STATE_background_image_raw_size_y", STATE_background_image_raw_size_y);
+            setData("STATE_background_image_raw_ratio", STATE_background_image_raw_ratio);
+            setData("STATE_background_image_repeat", STATE_background_image_repeat);
+            setData("STATE_background_image_position_x", STATE_background_image_position_x);
+            setData("STATE_background_image_position_y", STATE_background_image_position_y);
             setData("STATE_background_image_editor_button", STATE_background_image_editor_button);
             setData("STATE_background_color_editor_button", STATE_background_color_editor_button);
-            setData("STATE_background_image", STATE_background_image);
         }  
 
         //////////////////////////////////////////////// LIMITS INITIALISATION //////////////////////////////////////////////////
@@ -437,7 +522,6 @@
         let BGI_lastX = 0;
         let BGI_lastY = 0;
         let BGI_size = STATE_background_image_size;
-
         let BGI_size_px_value = (STATE_background_image_size*window.innerHeight) / 100;
         let BGI_size_x = BGI_size_px_value;
         let BGI_size_y = BGI_size_x/STATE_background_image_raw_ratio;
@@ -507,41 +591,21 @@
             }
         });
 
-        /*VIEW_image_input.addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.onload = function() {
-                        const imageInfo = document.getElementById('imageInfo');
-                        imageInfo.innerHTML = `
-                            <p>URL: ${img.src}</p>
-                            <p>Width: ${img.width}px</p>
-                            <p>Height: ${img.height}px</p>
-                        `;
-                    };
-                    img.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });*/
-
         ///////////////////////////////////////////// UPDATE BACKGROUND IMAGE REPEAT //////////////////////////////////////////// 
         VIEW_full_screen.addEventListener("dblclick", function(event) {
-            if (BGI_isMounted) {
-                if (STATE_actualWindows === "main_windows" && event.target === this) {
+            if (STATE_actualWindows === "main_windows") {
+                if (BGI_isMounted && event.target === this) {
                     STATE_background_image_repeat = (STATE_background_image_repeat + 1) % TABLE_BACKGROUND_IMAGE_REPEAT.length;
                     VIEW_full_screen.style.backgroundRepeat = TABLE_BACKGROUND_IMAGE_REPEAT[STATE_background_image_repeat];
-                    setData("STATE_background_image_repeat", STATE_background_image_repeat);
+                    setData("STATE_background_image_repeat", STATE_background_image_repeat); 
                 }
             }
         });
 
         ////////////////////////////////////////////// UPDATE BACKGROUND IMAGE SIZE ///////////////////////////////////////////// 
         VIEW_full_screen.addEventListener('wheel', function(event) {
-            if (BGI_isMounted) {
-                if (STATE_actualWindows === "main_windows" && event.target === this) {
+            if (STATE_actualWindows === "main_windows") {
+                if (BGI_isMounted && event.target === this) {
                     if (event.deltaY < 0) {
                         // Wheel up
                         BGI_size += 10;
@@ -565,56 +629,66 @@
 
         /////////////////////////////////////////// UPDATE BACKGROUND IMAGE POSITION ///////////////////////////////////////////
         VIEW_full_screen.addEventListener('mousedown', (e) => {
-            if (BGI_isMounted) {
-                BGI_isMouseDown = true;
-                BGI_lastX = e.clientX;
-                BGI_lastY = e.clientY;
+            if (STATE_actualWindows === "main_windows") {
+                if (BGI_isMounted) {
+                    BGI_isMouseDown = true;
+                    BGI_lastX = e.clientX;
+                    BGI_lastY = e.clientY;
+                }
             }
         });
 
         VIEW_full_screen.addEventListener('mouseup', () => {
-            if (BGI_isMounted) BGI_isMouseDown = false;
+            if (STATE_actualWindows === "main_windows") {
+                if (BGI_isMounted) BGI_isMouseDown = false;
+            }
         });
 
         VIEW_full_screen.addEventListener('mouseleave', () => {
-            if (BGI_isMounted) BGI_isMouseDown = false;
+            if (STATE_actualWindows === "main_windows") {
+                if (BGI_isMounted) BGI_isMouseDown = false;
+            }
         });
 
         document.addEventListener('mouseout', (e) => {
-            if (BGI_isMounted) {
-                if (!e.relatedTarget || e.relatedTarget.nodeName === "HTML") {
-                    BGI_isMouseDown = false;
+            if (STATE_actualWindows === "main_windows") {
+                if (BGI_isMounted) {
+                    if (!e.relatedTarget || e.relatedTarget.nodeName === "HTML") {
+                        BGI_isMouseDown = false;
+                    }
                 }
             }
         });
 
         VIEW_full_screen.addEventListener('mousemove', (e) => {
-            if (BGI_isMounted) {
-                if (BGI_isMouseDown) {
-                    const deltaX = e.clientX - BGI_lastX;
-                    const deltaY = e.clientY - BGI_lastY;
+            if (STATE_actualWindows === "main_windows") {
+                if (BGI_isMounted) {
+                    if (BGI_isMouseDown) {
+                        const deltaX = e.clientX - BGI_lastX;
+                        const deltaY = e.clientY - BGI_lastY;
 
-                    const currentPosX = parseInt(VIEW_full_screen.style.backgroundPositionX || 0);
-                    const currentPosY = parseInt(VIEW_full_screen.style.backgroundPositionY || 0);
+                        const currentPosX = parseInt(VIEW_full_screen.style.backgroundPositionX || 0);
+                        const currentPosY = parseInt(VIEW_full_screen.style.backgroundPositionY || 0);
 
-                    //const centerX = window.innerWidth / 2;
-                    //const centerY = window.innerHeight / 2;
-                    const centerX = window.innerWidth;
-                    const centerY = window.innerHeight;
+                        const centerX = window.innerWidth;
+                        const centerY = window.innerHeight;
 
-                    const pre_newPosX = Math.min(Math.max(currentPosX + deltaX, -centerX), centerX);
-                    const pre_newPosY = Math.min(Math.max(currentPosY + deltaY, -centerY), centerY);
+                        const pre_newPosX = Math.min(Math.max(currentPosX + deltaX, -centerX), centerX);
+                        const pre_newPosY = Math.min(Math.max(currentPosY + deltaY, -centerY), centerY);
 
-                    const newPosX = pre_newPosX < -BGI_size_x ? -BGI_size_x : pre_newPosX;
-                    const newPosY = pre_newPosY < -BGI_size_y ? -BGI_size_y : pre_newPosY;
-                    //console.log(`newPosX : ${newPosX}`);
-                    //console.log(`newPosY : ${newPosY}`);
+                        const newPosX = pre_newPosX < -BGI_size_x ? -BGI_size_x : pre_newPosX;
+                        const newPosY = pre_newPosY < -BGI_size_y ? -BGI_size_y : pre_newPosY;
 
-                    VIEW_full_screen.style.backgroundPositionX = `${newPosX}px`;
-                    VIEW_full_screen.style.backgroundPositionY = `${newPosY}px`;
+                        STATE_background_image_position_x = newPosX;
+                        STATE_background_image_position_y = newPosY;
+                        VIEW_full_screen.style.backgroundPositionX = STATE_background_image_position_x+'px';
+                        VIEW_full_screen.style.backgroundPositionY = STATE_background_image_position_y+'px';
+                        setData("STATE_background_image_position_x", STATE_background_image_position_x);
+                        setData("STATE_background_image_position_y", STATE_background_image_position_y);
 
-                    BGI_lastX = e.clientX;
-                    BGI_lastY = e.clientY;
+                        BGI_lastX = e.clientX;
+                        BGI_lastY = e.clientY;
+                    }
                 }
             }
         });
@@ -623,6 +697,29 @@
         VIEW_background_color_editor_button.addEventListener('input', () => {
             STATE_background_color_editor_button = VIEW_full_screen.style.backgroundColor = VIEW_background_color_editor_button.value;
             setData("STATE_background_color_editor_button", STATE_background_color_editor_button);
+        });
+
+        ////////////////////////////////////////////////// TURN APP OFF MODAL ///////////////////////////////////////////////////
+        const turn_app_off_button = document.getElementById('turn_app_off_button');
+        const turn_app_off_button___modal = document.getElementById('turn_app_off_button___modal');
+        const turn_app_off_button___no_Button = document.getElementById('turn_app_off_button___no_Button');
+        const turn_app_off_button___yes_Button = document.getElementById('turn_app_off_button___yes_Button');
+
+        // Affiche le modal lorsque le bouton OFF est cliqué
+        turn_app_off_button.addEventListener('click', () => {
+            turn_app_off_button___modal.style.display = 'flex';
+        });
+
+        // Ferme le modal si on clique à l'extérieur ou sur le bouton "Non"
+        turn_app_off_button___modal.addEventListener('click', (e) => {
+        if (e.target === turn_app_off_button___modal || e.target === turn_app_off_button___no_Button) {
+            turn_app_off_button___modal.style.display = 'none';
+        }
+        });
+
+        // Rafraîchit la page si on clique sur "Oui"
+        turn_app_off_button___yes_Button.addEventListener('click', () => {
+            location.reload();
         });
 
         ////////////////////////////////////////////////// FIRST EXECUTION //////////////////////////////////////////////////////
