@@ -128,6 +128,15 @@
             bottom: 0;
             left: 0;
             display: flex;
+            justify-content: end;
+            /* flex-direction: row; */
+            gap: 5px;
+            background-color: rgba(0, 0, 0, 0);
+        }
+        .bottom-right {
+            bottom: 0;
+            right: 0;
+            display: flex;
             justify-content: center;
             gap: 5px;
             background-color: rgba(0, 0, 0, 0);
@@ -135,7 +144,6 @@
         .top-left {
             top: 0;
             left: 0;
-            display: flex;
             justify-content: space-between;
             gap: 5px;
             background-color: rgba(0, 0, 0, 0);
@@ -145,10 +153,6 @@
             right: 0;
             padding: 3px;
             padding-left: 5px;
-        }
-        .bottom-right {
-            bottom: 0;
-            right: 0;
         }
         .item {
             overflow: hidden;
@@ -164,11 +168,36 @@
             align-items:center;
             cursor: pointer;
         }
-        .item_info {
+        .item_param_1 {
             overflow: hidden;
-            height: 20px;
-            width: 20px;
-            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex: 1;
+            text-align: center;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            margin-top: auto;
+        }
+        .item_param_1 img{
+            width: 15px;
+        }
+        /*@media (max-width: 1000px) {
+            .item_param_1 {
+                height: 40px;
+                width: 40px;
+                border-radius: 20px;
+            }   
+            .item_param_1 img{
+                width: 15px;
+            }
+        }*/
+        .item_param_2 {
+            overflow: hidden;
+            height: 40px;
+            width: 40px;
+            border-radius: 20px;
             background-color: rgba(0, 0, 0, 0.4);
             display: flex;
             flex: 1;
@@ -178,6 +207,40 @@
             align-items:center;
             cursor: pointer;
         }
+        .item_param_2 img{
+            width: 15px;
+        }
+        /*@media (max-width: 1000px) {
+            .item_param_2 {
+                height: 40px;
+                width: 40px;
+                border-radius: 20px;
+            }   
+            .item_param_2 img{
+                width: 15px;
+            }
+        }*/
+        .item_last_pic_taken {
+            overflow: hidden;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex: 1;
+            text-align: center;
+            flex-direction: column;
+            justify-content: center;
+            align-items:center;
+            cursor: pointer;
+        }
+        /*@media (max-width: 1000px) {
+            .item_last_pic_taken {
+                height: 40px;
+                width: 40px;
+                border-radius: 20px;
+            }   
+            .item_last_pic_taken img{
+                width: 15px;
+            }
+        }*/
         .cercle-container {
             width: 20px;
             height: 20px;
@@ -240,6 +303,42 @@
         input[type="color"]::-moz-color-swatch {
             border: none;
         }
+
+        /************** VIEWS CORNERS SHOW & HIDDEN **************/
+        #VIEW_top_left_buttons {
+            display: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        #VIEW_top_right_buttons {
+            display: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        #VIEW_bottom_left_params_button {
+            display: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        
+        #VIEW_bottom_right_last_pic_taken_button {
+            height: 20px;/*40*/
+            width: 20px;/*40*/
+            border-radius: 10px;/*20*/
+            transition: height 0.2s ease, width 0.2s ease, border-radius 0.2 ease;
+        }
+        #VIEW_last_pic_taken {
+            width: 8px;/*15*/
+            transition: width 0.2s ease;
+        }
+
+        #VIEW_bottom_left_default_fullscreen_button {
+            height: 20px;/*40*/
+            width: 20px;/*40*/
+            border-radius: 10px;/*20*/
+            transition: height 0.2s ease, width 0.2s ease, border-radius 0.2 ease;
+        }
+        #VIEW_turn_screen_to_default_fullscreen {
+            width: 8px;/*15*/
+            transition: width 0.2s ease;
+        }
     </style>
 </head>
 
@@ -252,7 +351,7 @@
     <!------------------------------------------------------ ALL MODAL --------------------------------------------------------------->
     <div id="turn_app_off_button___modal">
         <div class="turn_app_off_button___modal_content">
-            <p>Are you sure you want to continue ?</p>
+            <p>Are you sure you want to continue?</p>
             <div class="turn_app_off_button___modal_buttons">
                 <button id="turn_app_off_button___no_Button">No</button>
                 <button id="turn_app_off_button___yes_Button">Yes</button>
@@ -263,7 +362,7 @@
     <!---------------------------------------------------- FULL SCREEN --------------------------------------------------------------->
     <div class="VIEW_full_screen">  
      
-        <div class="corner top-left">
+        <div id="VIEW_top_left_buttons" class="corner top-left">
             <!---------------------------------------- turn app off button ----------------------------------------------------------->
             <div class="item" id="turn_app_off_button">
                 <img src="src/img/turn-off.png"
@@ -310,32 +409,40 @@
         </div>
 
         <!-------------------------------------- go to github REPO ------------------------------------------------------------------>
-        <div class="corner top-right">
+        <div id="VIEW_top_right_buttons" class="corner top-right">
             <a href="https://github.com/happy32x/happy32xCAM" class="github-link-vertical-text" target="_blank">happy32xCAM></a>
         </div>
 
         <!------------------------------- display/hide option & parameters ---------------------------------------------------------->
         <div class="corner bottom-left">
-            <div class="item_info">
-                <img src="src/img/info.png" 
+            <div id="VIEW_bottom_left_default_fullscreen_button" class="item_param_1" onclick="turn_screen_to_default_fullscreen()">
+                <img id="VIEW_turn_screen_to_default_fullscreen"
+                     src=""
                      draggable="false" 
-                     width="20px"
                      onload="this.style.display='block'; this.nextElementSibling.style.display='none';" 
                      onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <p>i</p>
+                <p>F</p>
             </div>
-            <div class="item_info">
-                <img src="src/img/info.png" 
+            <div onclick="open_paramaters()" id="VIEW_bottom_left_params_button" class="item_param_2">
+                <img src="src/img/params-screen.png" 
                      draggable="false" 
-                     width="20px"
                      onload="this.style.display='block'; this.nextElementSibling.style.display='none';" 
                      onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <p>i</p>
+                <p>P</p>
             </div>
         </div>
 
         <!----------------------------------- display images taken by user -------------------------------------------------------->
-        <!-- <div class="corner bottom-right">happy32xCAM</div> -->
+        <div class="corner bottom-right">
+            <div id="VIEW_bottom_right_last_pic_taken_button" class="item_last_pic_taken">
+                <img id="VIEW_last_pic_taken"
+                     src="" 
+                     draggable="false" 
+                     onload="this.style.display='block'; this.nextElementSibling.style.display='none';" 
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <p>LPT</p>    
+            </div>
+        </div>
 
         <!----------------------------------------------- LOADING CONTAINER-------------------------------------------------------->
         <div class="loading_container">
@@ -368,7 +475,81 @@
             return value;
         }
         function deleteData(key) { localStorage.removeItem(key); }
-   
+        
+        function open_paramaters() {
+            
+        }
+
+        ///////////////////////////////// TURN SCREEN TO DEFAULT/FULLSCREEN ///////////////////////////////////////////
+        function turn_screen_to_default_fullscreen() {
+            if(STATE_turn_screen_to_default_fullscreen === "src/img/full-screen.png") {
+                turn_screen_to_fullscreen__animation();
+                STATE_turn_screen_to_default_fullscreen = "src/img/default-screen.png"
+                VIEW_turn_screen_to_default_fullscreen.src = STATE_turn_screen_to_default_fullscreen;
+                setData("STATE_turn_screen_to_default_fullscreen", STATE_turn_screen_to_default_fullscreen);
+            }else{
+                turn_screen_to_default__animation();
+                STATE_turn_screen_to_default_fullscreen = "src/img/full-screen.png"
+                VIEW_turn_screen_to_default_fullscreen.src = STATE_turn_screen_to_default_fullscreen;
+                setData("STATE_turn_screen_to_default_fullscreen", STATE_turn_screen_to_default_fullscreen);
+            }
+        }
+        function turn_screen_to_fullscreen__animation() {
+
+            VIEW_top_left_buttons.style.transform = 'translateY(-50px)';
+            VIEW_top_right_buttons.style.transform = 'translateY(-50px)';
+            VIEW_bottom_left_params_button.style.transform = 'translateY(50px)';
+            
+            VIEW_bottom_right_last_pic_taken_button.style.width = '20px';
+            VIEW_bottom_right_last_pic_taken_button.style.height = '20px';
+            VIEW_bottom_right_last_pic_taken_button.style.borderRadius = '10px';
+            VIEW_last_pic_taken.style.width = '8px';
+
+            VIEW_bottom_left_default_fullscreen_button.style.width = '20px';
+            VIEW_bottom_left_default_fullscreen_button.style.height = '20px';
+            VIEW_bottom_left_default_fullscreen_button.style.borderRadius = '10px';
+            VIEW_turn_screen_to_default_fullscreen.style.width = '8px';
+
+            setTimeout(() => {
+                VIEW_top_left_buttons.style.opacity = 0;
+                VIEW_top_left_buttons.style.display = 'none'
+            
+                VIEW_top_right_buttons.style.opacity = 0;
+                VIEW_top_right_buttons.style.display = 'none'
+
+                VIEW_bottom_left_params_button.style.opacity = 0;
+                VIEW_bottom_left_params_button.style.display = 'none'
+            }, 40);
+            
+        }
+        function turn_screen_to_default__animation() {
+
+            VIEW_top_left_buttons.style.display = 'flex';
+            VIEW_top_right_buttons.style.display = 'flex';
+            VIEW_bottom_left_params_button.style.display = 'flex';
+
+            VIEW_bottom_right_last_pic_taken_button.style.width = '40px';
+            VIEW_bottom_right_last_pic_taken_button.style.height = '40px';
+            VIEW_bottom_right_last_pic_taken_button.style.borderRadius = '20px';
+            VIEW_last_pic_taken.style.width = '15px';
+
+            VIEW_bottom_left_default_fullscreen_button.style.width = '40px';
+            VIEW_bottom_left_default_fullscreen_button.style.height = '40px';
+            VIEW_bottom_left_default_fullscreen_button.style.borderRadius = '20px';
+            VIEW_turn_screen_to_default_fullscreen.style.width = '15px';
+
+            setTimeout(() => {
+                VIEW_top_left_buttons.style.opacity = 1;
+                VIEW_top_left_buttons.style.transform = 'translateY(0px)';
+                
+                VIEW_top_right_buttons.style.opacity = 1;
+                VIEW_top_right_buttons.style.transform = 'translateY(0px)';
+
+                VIEW_bottom_left_params_button.style.opacity = 1;
+                VIEW_bottom_left_params_button.style.transform = 'translateY(0px)';
+            }, 0);
+        }
+
         ////////////////////////////////////////// TURN SCREEN TO TV NOISE ///////////////////////////////////////////////////////
         function turn_screen_to_noise_tv() {
             //we change windows
@@ -408,6 +589,7 @@
             VIEW_noise_tv_sound.pause();
             //we update full_screen ot fit actual windows
             VIEW_full_screen.style.backgroundImage = STATE_background_image ? 'url('+STATE_background_image+')' : null;
+            VIEW_full_screen.style.backgroundColor = STATE_background_color_editor_button;
 
             VIEW_full_screen.style.backgroundRepeat = TABLE_BACKGROUND_IMAGE_REPEAT[STATE_background_image_repeat];
             VIEW_full_screen.style.backgroundPositionX = STATE_background_image_position_x+'px';
@@ -506,6 +688,10 @@
         let STATE_background_image_position_y = getData("STATE_background_image_position_y") ? getData("STATE_background_image_position_y") : 0;
         let STATE_background_image_editor_button = getData("STATE_background_image_editor_button") ? getData("STATE_background_image_editor_button") : "src/img/camera.png";
         let STATE_background_color_editor_button = getData("STATE_background_color_editor_button") ? getData("STATE_background_color_editor_button") : "#0000FF";
+        let STATE_last_pic_taken = getData("STATE_last_pic_taken") ? getData("STATE_last_pic_taken") : "src/img/last-pic-taken-screen.png";
+        let STATE_turn_screen_to_default_fullscreen = getData("STATE_turn_screen_to_default_fullscreen") ? getData("STATE_turn_screen_to_default_fullscreen") : "src/img/full-screen.png";
+
+        
 
         ///////////////////////////////////////////////// VIEWS INITIALISATION //////////////////////////////////////////////////
         let VIEW_full_screen = document.querySelector('.VIEW_full_screen');
@@ -515,6 +701,14 @@
         let VIEW_background_color_editor_button = document.getElementById('VIEW_background_color_editor_button');
         let VIEW_image_input_button = document.getElementById('VIEW_image_input_button');
         let VIEW_image_input = document.getElementById('VIEW_image_input');
+        let VIEW_last_pic_taken = document.getElementById('VIEW_last_pic_taken');
+        let VIEW_turn_screen_to_default_fullscreen = document.getElementById('VIEW_turn_screen_to_default_fullscreen');
+
+        let VIEW_top_left_buttons = document.getElementById('VIEW_top_left_buttons');
+        let VIEW_top_right_buttons = document.getElementById('VIEW_top_right_buttons');
+        let VIEW_bottom_left_params_button = document.getElementById('VIEW_bottom_left_params_button');
+        let VIEW_bottom_left_default_fullscreen_button =  document.getElementById('VIEW_bottom_left_default_fullscreen_button');
+        let VIEW_bottom_right_last_pic_taken_button = document.getElementById('VIEW_bottom_right_last_pic_taken_button');
 
         ////////////////////////////////////// BACKGROUND IMAGE HANDLER INITIALISATION ////////////////////////////////////////
         let BGI_isMounted = STATE_background_image ? true : false;
@@ -742,6 +936,15 @@
             VIEW_full_screen.style.backgroundPositionX = STATE_background_image_position_x+'px';
             VIEW_full_screen.style.backgroundPositionY = STATE_background_image_position_y+'px';
             VIEW_full_screen.style.backgroundSize = STATE_background_image_size+'vh';
+
+            VIEW_last_pic_taken.src = STATE_last_pic_taken;
+            VIEW_turn_screen_to_default_fullscreen.src = STATE_turn_screen_to_default_fullscreen;
+
+            if(STATE_turn_screen_to_default_fullscreen === "src/img/full-screen.png") {
+                turn_screen_to_default__animation();
+            }else{
+                turn_screen_to_fullscreen__animation();
+            }
         })();
     </script>
 </body>
