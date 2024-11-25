@@ -142,6 +142,7 @@
             background-color: rgba(0, 0, 0, 0);
         }
         .top-left {
+            display: flex;
             top: 0;
             left: 0;
             justify-content: space-between;
@@ -305,7 +306,23 @@
         }
 
         /************** VIEWS CORNERS SHOW & HIDDEN **************/
-        #VIEW_top_left_buttons {
+        /*#VIEW_top_left_buttons {
+            display: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }*/
+        #VIEW_top_left_buttons_refresh {
+            display: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        #VIEW_top_left_buttons_color {
+            display: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        #VIEW_top_left_buttons_image {
+            display: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        #VIEW_top_left_buttons_mute {
             display: none;
             transition: opacity 0.2s ease, transform 0.2s ease;
         }
@@ -329,6 +346,25 @@
             transition: width 0.2s ease;
         }
 
+        #turn_app_off_button {
+            overflow: hidden;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex: 1;
+            text-align: center;
+            flex-direction: column;
+            justify-content: center;
+            align-items:center;
+            cursor: pointer;
+            height: 20px;/*40*/
+            width: 20px;/*40*/
+            border-radius: 10px;/*20*/
+            transition: height 0.2s ease, width 0.2s ease, border-radius 0.2 ease;
+        }
+        #turn_app_off_button___image {
+            width: 8px;/*20*/
+            transition: width 0.2s ease;
+        }
         #VIEW_bottom_left_default_fullscreen_button {
             height: 20px;/*40*/
             width: 20px;/*40*/
@@ -364,8 +400,9 @@
      
         <div id="VIEW_top_left_buttons" class="corner top-left">
             <!---------------------------------------- turn app off button ----------------------------------------------------------->
-            <div class="item" id="turn_app_off_button">
-                <img src="src/img/turn-off.png"
+            <div id="turn_app_off_button">
+                <img id="turn_app_off_button___image"
+                     src="src/img/turn-off.png"
                      draggable="false"
                      width="20px"
                      onload="this.style.display='block'; this.nextElementSibling.style.display='none';" 
@@ -373,7 +410,7 @@
                 <p>OFF</p>
             </div>
             <!---------------------------------------------- refresh button ---------------------------------------------------------->
-            <div class="item" onclick="reset_background_color_and_image()">
+            <div id="VIEW_top_left_buttons_refresh" class="item" onclick="reset_background_color_and_image()">
                 <img src="src/img/refresh.png"
                      draggable="false"
                      width="20px"
@@ -382,11 +419,11 @@
                 <p>R</p>
             </div>
             <!-------------------------------------- background-color editor button -------------------------------------------------->
-            <div class="item_color">
+            <div id="VIEW_top_left_buttons_color" class="item_color">
                 <input id="VIEW_background_color_editor_button" type="color" value="#0000FF">
             </div>
             <!-------------------------------------- background image editor button -------------------------------------------------->
-            <div class="item" id="VIEW_image_input_button">
+            <div id="VIEW_top_left_buttons_image"class="item">
                 <div class="cercle-container">
                     <img id="VIEW_background_image_editor_button"
                          src=""
@@ -397,7 +434,7 @@
                 </div>
             </div>
             <!--------------------------------------------- play/mute button --------------------------------------------------------->
-            <div class="item" onclick="play_mute_all_sound()">
+            <div id="VIEW_top_left_buttons_mute" class="item" onclick="play_mute_all_sound()">
                 <img id="VIEW_play_mute_all_sound_image"
                      src=""
                      draggable="false"
@@ -496,7 +533,11 @@
         }
         function turn_screen_to_fullscreen__animation() {
 
-            VIEW_top_left_buttons.style.transform = 'translateY(-50px)';
+            VIEW_top_left_buttons_refresh.style.transform = 'translateY(-50px)';
+            VIEW_top_left_buttons_color.style.transform = 'translateY(-50px)';
+            VIEW_top_left_buttons_image.style.transform = 'translateY(-50px)';
+            VIEW_top_left_buttons_mute.style.transform = 'translateY(-50px)';
+
             VIEW_top_right_buttons.style.transform = 'translateY(-50px)';
             VIEW_bottom_left_params_button.style.transform = 'translateY(50px)';
             
@@ -510,9 +551,20 @@
             VIEW_bottom_left_default_fullscreen_button.style.borderRadius = '10px';
             VIEW_turn_screen_to_default_fullscreen.style.width = '8px';
 
+            turn_app_off_button.style.width = '20px';
+            turn_app_off_button.style.height = '20px';
+            turn_app_off_button.style.borderRadius = '10px';
+            turn_app_off_button___image.style.width = '8px';
+
             setTimeout(() => {
-                VIEW_top_left_buttons.style.opacity = 0;
-                VIEW_top_left_buttons.style.display = 'none'
+                VIEW_top_left_buttons_refresh.style.opacity = 0;
+                VIEW_top_left_buttons_refresh.style.display = 'none'
+                VIEW_top_left_buttons_color.style.opacity = 0;
+                VIEW_top_left_buttons_color.style.display = 'none'
+                VIEW_top_left_buttons_image.style.opacity = 0;
+                VIEW_top_left_buttons_image.style.display = 'none'
+                VIEW_top_left_buttons_mute.style.opacity = 0;
+                VIEW_top_left_buttons_mute.style.display = 'none'
             
                 VIEW_top_right_buttons.style.opacity = 0;
                 VIEW_top_right_buttons.style.display = 'none'
@@ -524,7 +576,11 @@
         }
         function turn_screen_to_default__animation() {
 
-            VIEW_top_left_buttons.style.display = 'flex';
+            VIEW_top_left_buttons_refresh.style.display = 'flex';
+            VIEW_top_left_buttons_color.style.display = 'flex';
+            VIEW_top_left_buttons_image.style.display = 'flex';
+            VIEW_top_left_buttons_mute.style.display = 'flex';
+
             VIEW_top_right_buttons.style.display = 'flex';
             VIEW_bottom_left_params_button.style.display = 'flex';
 
@@ -538,9 +594,20 @@
             VIEW_bottom_left_default_fullscreen_button.style.borderRadius = '20px';
             VIEW_turn_screen_to_default_fullscreen.style.width = '15px';
 
+            turn_app_off_button.style.width = '40px';
+            turn_app_off_button.style.height = '40px';
+            turn_app_off_button.style.borderRadius = '20px';
+            turn_app_off_button___image.style.width = '20px';
+
             setTimeout(() => {
-                VIEW_top_left_buttons.style.opacity = 1;
-                VIEW_top_left_buttons.style.transform = 'translateY(0px)';
+                VIEW_top_left_buttons_refresh.style.opacity = 1;
+                VIEW_top_left_buttons_refresh.style.transform = 'translateY(0px)';
+                VIEW_top_left_buttons_color.style.opacity = 1;
+                VIEW_top_left_buttons_color.style.transform = 'translateY(0px)';
+                VIEW_top_left_buttons_image.style.opacity = 1;
+                VIEW_top_left_buttons_image.style.transform = 'translateY(0px)';
+                VIEW_top_left_buttons_mute.style.opacity = 1;
+                VIEW_top_left_buttons_mute.style.transform = 'translateY(0px)';
                 
                 VIEW_top_right_buttons.style.opacity = 1;
                 VIEW_top_right_buttons.style.transform = 'translateY(0px)';
@@ -699,16 +766,20 @@
         let VIEW_play_mute_all_sound_image = document.getElementById('VIEW_play_mute_all_sound_image');
         let VIEW_background_image_editor_button = document.getElementById('VIEW_background_image_editor_button');
         let VIEW_background_color_editor_button = document.getElementById('VIEW_background_color_editor_button');
-        let VIEW_image_input_button = document.getElementById('VIEW_image_input_button');
         let VIEW_image_input = document.getElementById('VIEW_image_input');
         let VIEW_last_pic_taken = document.getElementById('VIEW_last_pic_taken');
-        let VIEW_turn_screen_to_default_fullscreen = document.getElementById('VIEW_turn_screen_to_default_fullscreen');
-
-        let VIEW_top_left_buttons = document.getElementById('VIEW_top_left_buttons');
+        
+        let VIEW_top_left_buttons_refresh = document.getElementById('VIEW_top_left_buttons_refresh');
+        let VIEW_top_left_buttons_color = document.getElementById('VIEW_top_left_buttons_color');
+        let VIEW_top_left_buttons_image = document.getElementById('VIEW_top_left_buttons_image');
+        let VIEW_top_left_buttons_mute = document.getElementById('VIEW_top_left_buttons_mute');
+        
         let VIEW_top_right_buttons = document.getElementById('VIEW_top_right_buttons');
         let VIEW_bottom_left_params_button = document.getElementById('VIEW_bottom_left_params_button');
-        let VIEW_bottom_left_default_fullscreen_button =  document.getElementById('VIEW_bottom_left_default_fullscreen_button');
         let VIEW_bottom_right_last_pic_taken_button = document.getElementById('VIEW_bottom_right_last_pic_taken_button');
+
+        let VIEW_bottom_left_default_fullscreen_button = document.getElementById('VIEW_bottom_left_default_fullscreen_button');
+        let VIEW_turn_screen_to_default_fullscreen = document.getElementById('VIEW_turn_screen_to_default_fullscreen');
 
         ////////////////////////////////////// BACKGROUND IMAGE HANDLER INITIALISATION ////////////////////////////////////////
         let BGI_isMounted = STATE_background_image ? true : false;
@@ -743,7 +814,7 @@
         });
 
         //////////////////////////////////////////////// UPDATE BACKGROUND IMAGE ////////////////////////////////////////////////
-        VIEW_image_input_button.addEventListener('click', function() {
+        VIEW_top_left_buttons_image.addEventListener('click', function() {
             VIEW_image_input.click();
         });
         VIEW_image_input.addEventListener('change', function(event) {
@@ -895,6 +966,7 @@
 
         ////////////////////////////////////////////////// TURN APP OFF MODAL ///////////////////////////////////////////////////
         const turn_app_off_button = document.getElementById('turn_app_off_button');
+        const turn_app_off_button___image = document.getElementById('turn_app_off_button___image');
         const turn_app_off_button___modal = document.getElementById('turn_app_off_button___modal');
         const turn_app_off_button___no_Button = document.getElementById('turn_app_off_button___no_Button');
         const turn_app_off_button___yes_Button = document.getElementById('turn_app_off_button___yes_Button');
