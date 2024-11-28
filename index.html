@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>happy32xCAM</title>
     <link rel="icon" type="image/x-icon" href="src/img/camera.ico">
-
 <!----------------------------------------------------------- CSS -------------------------------------------------------------------->
+    <link rel="stylesheet" href="src/css/parameters.css">
     <style>
         /*********** GitHub Link **********/
         .github-link-vertical-text {
@@ -395,6 +395,138 @@
         </div>
     </div>
 
+    <!------------------------------------------------------ PARAMETERS --------------------------------------------------------------->
+    <div class="camparams_fullscreen-overlay" id="camparams_fullscreenOverlay">
+   
+        <div id="camparams_header" class="camparams_header">
+          <h1>Parameters</h1>
+          <div id="camparams_closeBtn">
+            <button class="camparams_close-btn" aria-label="Fermer"></button>
+          </div>
+        </div>
+    
+        <div class="camparams_body">
+          <div class="camparams_tabs">
+            <div class="camparams_tab camparams_active" onclick="camparams_showTabContent(0)">Keyboard shortcut</div>
+            <div class="camparams_tab" onclick="camparams_showTabContent(1)">Details</div>
+          </div>
+          <div class="camparams_tab-content camparams_active">
+            <div class="camparams_table-container">
+              <table class="camparams_styled-table_keyboard_shortcut">
+                <tbody>
+                  <tr>
+                    <td>Copier</td>
+                    <td class="camparams_text_greenyellow">Ctrl + C</td>
+                  </tr>
+                  <tr>
+                    <td>Coller</td>
+                    <td class="camparams_text_greenyellow">Ctrl + V</td>
+                  </tr>
+                  <tr>
+                    <td>Couper</td>
+                    <td class="camparams_text_greenyellow">Ctrl + X</td>
+                  </tr>
+                  <tr>
+                    <td>Annuler</td>
+                    <td class="camparams_text_greenyellow">ctrl + Z</td>
+                  </tr>
+                  <tr>
+                    <td>Rechercher</td>
+                    <td class="camparams_text_greenyellow">Ctrl + F</td>
+                  </tr>
+                  <tr>
+                    <td>Enregistrer</td>
+                    <td class="camparams_text_greenyellow">Ctrl + S</td>
+                  </tr>
+                  <tr>
+                    <td>Coller</td>
+                    <td class="camparams_text_greenyellow">Ctrl + V</td>
+                  </tr>
+                  <tr>
+                    <td>Couper</td>
+                    <td class="camparams_text_greenyellow">Ctrl + X</td>
+                  </tr>
+                  <tr>
+                    <td>Annuler</td>
+                    <td class="camparams_text_greenyellow">ctrl + Z</td>
+                  </tr>
+                  <tr>
+                    <td>Rechercher</td>
+                    <td class="camparams_text_greenyellow">Ctrl + F</td>
+                  </tr>
+                  <tr>
+                    <td>Enregistrer</td>
+                    <td class="camparams_text_greenyellow">Ctrl + S</td>
+                  </tr>
+                  <tr>
+                    <td>Coller</td>
+                    <td class="camparams_text_greenyellow">Ctrl + V</td>
+                  </tr>
+                  <tr>
+                    <td>Couper</td>
+                    <td class="camparams_text_greenyellow">Ctrl + X</td>
+                  </tr>
+                  <tr>
+                    <td>Annuler</td>
+                    <td class="camparams_text_greenyellow">ctrl + Z</td>
+                  </tr>
+                  <tr>
+                    <td>Rechercher</td>
+                    <td class="camparams_text_greenyellow">Ctrl + F</td>
+                  </tr>
+                  <tr>
+                    <td>Enregistrer</td>
+                    <td class="camparams_text_greenyellow">Ctrl + S</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="camparams_tab-content">
+            <div class="camparams_table-container">
+              <table class="camparams_styled-table_details">
+                <tbody>
+                  <tr>
+                    <td><strong>AppName:</strong></td>
+                    <td class="camparams_text_greenyellow">happy32xCAM</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Version:</strong></td>
+                    <td>2.0.0</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Author:</strong></td>
+                    <td><p>Happy Ngounou Julien Christian</p></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Website:</strong></td>
+                    <td><p><a href="https://linktr.ee/happy32x" target="_blank">https://linktr.ee/happy32x></a></p></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Description:</strong></td>
+                    <td>
+                      <p><text class="camparams_text_greenyellow">happy32xCAM</text> is a minimalist photography application, ideal for capture moments with professional quality.<br><br>
+                      It offers features such as keyboard ergonomics and auto-capture for taking multiple photos simultaneously.<br><br>
+                      AI-powered video stabilization optimizes your shots.<br><br>
+                      The application also allows you to save your photos so you never lose them.<br><br>
+                      Its intuitive interface and regular updates make it a powerful and easy to use.<br><br></p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Project Link:</strong></td>
+                    <td><p><a href="https://github.com/happy32x/happy32xCAM" target="_blank">https://github.com/happy32x/happy32xCAM></a></p></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Licence:</strong></td>
+                    <td>MIT</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
     <!---------------------------------------------------- FULL SCREEN --------------------------------------------------------------->
     <div class="VIEW_full_screen">  
      
@@ -471,7 +603,7 @@
 
         <!----------------------------------- display images taken by user -------------------------------------------------------->
         <div class="corner bottom-right">
-            <div id="VIEW_bottom_right_last_pic_taken_button" class="item_last_pic_taken">
+            <div onclick="open_last_pic_taken()" id="VIEW_bottom_right_last_pic_taken_button" class="item_last_pic_taken">
                 <img id="VIEW_last_pic_taken"
                      src="" 
                      draggable="false" 
@@ -491,6 +623,8 @@
 
  <!---------------------------------------------------------- SCRIPT -------------------------------------------------------------->   
     <script>
+        
+
         ///////////////////////////////////////////// DATABASE MANAGER ///////////////////////////////////////////////////////////
 
         /* We need to monitor everythings the user stores in the database
@@ -514,7 +648,11 @@
         function deleteData(key) { localStorage.removeItem(key); }
         
         function open_paramaters() {
-            
+            camparams_fullscreenOverlay.classList.add('camparams_active');
+        }
+
+        function open_last_pic_taken() {
+            console.log("Coming Soon !")
         }
 
         ///////////////////////////////// TURN SCREEN TO DEFAULT/FULLSCREEN ///////////////////////////////////////////
@@ -1018,6 +1156,12 @@
                 turn_screen_to_fullscreen__animation();
             }
         })();
+
+        //////////////////////////// AFTER FIRST EXECUTION WE CHARGE BACKSTAGE CONTENTS /////////////////////////////
+        
+        //We build parameters contents
+
     </script>
+    <script type="text/javascript" src="src/js/parameters.js"></script>
 </body>
 </html>

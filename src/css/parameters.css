@@ -1,0 +1,225 @@
+.camparams_fullscreen-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: white;
+    display: none;
+    flex-direction: column;
+    z-index: 1000;
+  }
+  .camparams_fullscreen-overlay.camparams_active {
+    display: flex;
+  }
+
+  .camparams_header {
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 15px;
+  }
+  .camparams_header h1 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 100;
+  }
+  .camparams_header .camparams_close-btn {
+    background: none; /* Pas de fond */
+    border: none; /* Pas de bordure */
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    position: relative;
+  }
+  .camparams_header .camparams_close-btn::before,
+  .camparams_header .camparams_close-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30px;
+    height: 2px;
+    background-color: white;
+    transform-origin: center;
+  }
+
+  .camparams_header .camparams_close-btn::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+
+  .camparams_header .camparams_close-btn::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+  }
+
+  .camparams_body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  #camparams_closeBtn{
+      padding: 10px;
+      cursor: pointer;
+  }
+
+  /********** TABS ***********/
+  .camparams_tabs {
+    height: 37px;
+    display: flex;
+    justify-content: center;
+  }
+  .camparams_tab {
+    cursor: pointer;
+    padding: 10px 20px;
+    border: 1px solid #444;
+    border-bottom: none;
+    margin-right: 5px;
+    transition: background-color 0.3s;
+    background-color: none;
+    color: rgba(255, 255, 255, 0.3);
+  }
+  .camparams_tab.camparams_active {
+    background-color: #444;
+    color: white;
+    font-weight: bold;
+    /*border-bottom: 2px solid #000;*/
+  }
+  /* Conteneur avec barre de défilement */
+  /*{
+    justify-content: center;
+    align-items: center;
+  }*/
+  .camparams_tab-content{
+    display: none;
+    width: 100%;
+    height: 70vh;
+    border-top: 1px solid #444;  
+    overflow: auto; /* Affiche la barre de défilement seulement si nécessaire */
+  }
+  /* Styliser la barre de défilement (Chrome, Edge, Safari) */
+  .camparams_tab-content::-webkit-scrollbar {
+    width: 8px; /* Largeur de la barre */
+  }
+  .camparams_tab-content::-webkit-scrollbar-thumb {
+    background-color: #888; /* Couleur de la barre */
+    border-radius: 4px; /* Coins arrondis */
+  }
+  .camparams_tab-content::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Couleur au survol */
+  }
+  .camparams_tab-content.camparams_active {
+    display: block;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /*********** TABLE ************/
+  .camparams_table-container {
+    width: 100%;
+  }
+  /*********** TABLE KEYBOARD SHORTCUT ************/
+  .camparams_styled-table_keyboard_shortcut {
+    width: 100%;
+    /*border-collapse: collapse;*/
+    background-color: rgba(0, 0, 0, 0.0); /* Fond transparent/noir */
+    color: #fff; /* Texte blanc */
+    padding-left: 100px;
+    padding-right: 100px;
+    padding-top: 10px;
+    padding-bottom: 30px;
+  }
+  @media (max-width: 500px) {
+          .camparams_styled-table_keyboard_shortcut {
+            padding-left: 0px;
+            padding-right: 0px;
+          }   
+  }
+  .camparams_styled-table_keyboard_shortcut th, .camparams_styled-table_keyboard_shortcut td {
+    padding: 10px;
+    text-align: left;
+    vertical-align: top;
+  }
+  .camparams_styled-table_keyboard_shortcut th {
+    background-color: #555; /* Gris foncé pour les en-têtes */
+  }
+  .camparams_styled-table_keyboard_shortcut tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.1); /* Transparence pour les lignes paires */
+  }
+  /*.camparams_styled-table_keyboard_shortcut tr:hover {
+    background-color: rgba(255, 255, 255, 0.0);
+  }*/
+
+  /*********** TABLE DETAILS ************/
+  .camparams_styled-table_details {
+    width: 100%;
+    /*border-collapse: collapse;*/
+    background-color: rgba(0, 0, 0, 0.0); /* Fond transparent/noir */
+    color: #fff; /* Texte blanc */
+    padding-left: 100px;
+    padding-right: 100px;
+    padding-top: 10px;
+    padding-bottom: 30px;
+  }
+  .camparams_styled-table_details th, 
+  .camparams_styled-table_details td {
+    padding: 10px;
+    text-align: left;
+    vertical-align: top;
+  }
+  .camparams_styled-table_details th {
+    border-bottom: 1px solid #555;
+    /*background-color: #555; /* Gris foncé pour les en-têtes */
+  }
+  .camparams_styled-table_details tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.0); /* Transparence pour les lignes paires */
+  }
+  .camparams_styled-table_details tr:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Effet survol */
+  }
+  .camparams_styled-table_details a {
+    color: white;
+  }
+
+  .camparams_styled-table_details p{
+    margin: 0;
+  } 
+
+  @media (max-width: 600px) {
+    .camparams_styled-table_details p{
+      max-width: 30ch;
+      word-wrap: break-word;
+    } 
+    .camparams_styled-table_details {
+      padding-left: 0px;
+      padding-right: 0px;
+    }   
+  }
+
+  @media (max-width: 550px) {
+    .camparams_styled-table_details p{
+      max-width: 25ch;
+      word-wrap: break-word;
+    }  
+  }
+
+  @media (max-width: 500px) {
+    .camparams_styled-table_details p{
+      max-width: 20ch;
+      word-wrap: break-word;
+    }  
+  }
+
+  @media (max-width: 450px) {
+    .camparams_styled-table_details p{
+      max-width: 15ch;
+      word-wrap: break-word;
+    }  
+  }
+
+  /*********** TEXT GREEN YELLOW ************/
+  .camparams_text_greenyellow{
+    color: greenyellow;
+  }
