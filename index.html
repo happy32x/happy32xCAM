@@ -11,6 +11,8 @@
         /*********** GitHub Link **********/
         .github-link-vertical-text {
             writing-mode: horizontal-tb; /* Par défaut */
+            user-select: none;
+          -webkit-user-drag: none;
         }
         @media screen and (max-width: 360px) {
         .github-link-vertical-text {
@@ -81,7 +83,7 @@
             background-repeat: repeat;
             background-position-x: 0px;
             background-position-y: 0px;
-            background-size: 30vh;
+            background-size: 30px;
 
             display: flex;
             justify-content: center;
@@ -385,6 +387,7 @@
     <input id="VIEW_image_input" type="file" accept="image/*">
 
     <!------------------------------------------------------ ALL MODAL --------------------------------------------------------------->
+    <!-- turn app off button modal -->
     <div id="turn_app_off_button___modal">
         <div class="turn_app_off_button___modal_content">
             <p>Are you sure you want to continue?</p>
@@ -603,7 +606,7 @@
 
         <!----------------------------------- display images taken by user -------------------------------------------------------->
         <div class="corner bottom-right">
-            <div onclick="open_last_pic_taken()" id="VIEW_bottom_right_last_pic_taken_button" class="item_last_pic_taken">
+            <div onclick="open_photo_explorer()" id="VIEW_bottom_right_last_pic_taken_button" class="item_last_pic_taken">
                 <img id="VIEW_last_pic_taken"
                      src="" 
                      draggable="false" 
@@ -647,11 +650,14 @@
         }
         function deleteData(key) { localStorage.removeItem(key); }
         
+
+
+        ////////////////////////////////////////////////////////
         function open_paramaters() {
             camparams_fullscreenOverlay.classList.add('camparams_active');
         }
 
-        function open_last_pic_taken() {
+        function open_photo_explorer() {
             console.log("Coming Soon !")
         }
 
@@ -675,7 +681,6 @@
             VIEW_top_left_buttons_color.style.transform = 'translateY(-50px)';
             VIEW_top_left_buttons_image.style.transform = 'translateY(-50px)';
             VIEW_top_left_buttons_mute.style.transform = 'translateY(-50px)';
-
             VIEW_top_right_buttons.style.transform = 'translateY(-50px)';
             VIEW_bottom_left_params_button.style.transform = 'translateY(50px)';
             
@@ -703,10 +708,8 @@
                 VIEW_top_left_buttons_image.style.display = 'none'
                 VIEW_top_left_buttons_mute.style.opacity = 0;
                 VIEW_top_left_buttons_mute.style.display = 'none'
-            
                 VIEW_top_right_buttons.style.opacity = 0;
                 VIEW_top_right_buttons.style.display = 'none'
-
                 VIEW_bottom_left_params_button.style.opacity = 0;
                 VIEW_bottom_left_params_button.style.display = 'none'
             }, 40);
@@ -718,7 +721,6 @@
             VIEW_top_left_buttons_color.style.display = 'flex';
             VIEW_top_left_buttons_image.style.display = 'flex';
             VIEW_top_left_buttons_mute.style.display = 'flex';
-
             VIEW_top_right_buttons.style.display = 'flex';
             VIEW_bottom_left_params_button.style.display = 'flex';
 
@@ -746,10 +748,8 @@
                 VIEW_top_left_buttons_image.style.transform = 'translateY(0px)';
                 VIEW_top_left_buttons_mute.style.opacity = 1;
                 VIEW_top_left_buttons_mute.style.transform = 'translateY(0px)';
-                
                 VIEW_top_right_buttons.style.opacity = 1;
                 VIEW_top_right_buttons.style.transform = 'translateY(0px)';
-
                 VIEW_bottom_left_params_button.style.opacity = 1;
                 VIEW_bottom_left_params_button.style.transform = 'translateY(0px)';
             }, 0);
@@ -780,7 +780,7 @@
                     VIEW_full_screen.style.backgroundRepeat = 'repeat';
                     VIEW_full_screen.style.backgroundPositionX = '0px'
                     VIEW_full_screen.style.backgroundPositionY = '0px'
-                    VIEW_full_screen.style.backgroundSize = LIMIT_BACKGROUND_IMAGE_SIZE_MID+'vh';
+                    VIEW_full_screen.style.backgroundSize = LIMIT_BACKGROUND_IMAGE_SIZE_MID+'px';
                 }
             };
         }
@@ -799,7 +799,7 @@
             VIEW_full_screen.style.backgroundRepeat = TABLE_BACKGROUND_IMAGE_REPEAT[STATE_background_image_repeat];
             VIEW_full_screen.style.backgroundPositionX = STATE_background_image_position_x+'px';
             VIEW_full_screen.style.backgroundPositionY = STATE_background_image_position_y+'px';
-            VIEW_full_screen.style.backgroundSize = STATE_background_image_size+'vh';
+            VIEW_full_screen.style.backgroundSize = STATE_background_image_size+'px';
 
             //we delete the loader and the message we replace them by the button
             document.querySelector('.loading_container').innerHTML = `
@@ -828,6 +828,8 @@
             //STATE
             STATE_background_image = null;  
             STATE_background_image_size = LIMIT_BACKGROUND_IMAGE_SIZE_MID;
+            STATE_background_image_size_x = 0;
+            STATE_background_image_size_y = 0;
             STATE_background_image_raw_size_x = 0;
             STATE_background_image_raw_size_y = 0;
             STATE_background_image_raw_ratio = 0;
@@ -838,12 +840,16 @@
             STATE_background_color_editor_button = "#0000FF";
 
             //BGI
+            //mount
             BGI_isMounted = STATE_background_image ? true : false;
             BGI_isMouseDown = false;
+            //move
             BGI_lastX = 0;
             BGI_lastY = 0;
+
             BGI_size = STATE_background_image_size;
             BGI_size_px_value = (STATE_background_image_size*window.innerHeight) / 100;
+
             BGI_size_x = BGI_size_px_value;
             BGI_size_y = BGI_size_x/STATE_background_image_raw_ratio;
 
@@ -858,7 +864,7 @@
             VIEW_full_screen.style.backgroundRepeat = TABLE_BACKGROUND_IMAGE_REPEAT[STATE_background_image_repeat];
             VIEW_full_screen.style.backgroundPositionX = STATE_background_image_position_x+'px';
             VIEW_full_screen.style.backgroundPositionY = STATE_background_image_position_y+'px';
-            VIEW_full_screen.style.backgroundSize = STATE_background_image_size+'vh';
+            VIEW_full_screen.style.backgroundSize = STATE_background_image_size+'px';
         
             //DATA
             setData("STATE_background_image", STATE_background_image);
@@ -878,13 +884,19 @@
         const LIMIT_BACKGROUND_IMAGE_SIZE_MID = 30;
         const LIMIT_BACKGROUND_IMAGE_SIZE_MIN = 20;
         const LIMIT_BACKGROUND_IMAGE_SIZE_MAX = 100;
-        const TABLE_BACKGROUND_IMAGE_REPEAT = ['repeat', 'repeat-x', 'repeat-y', 'no-repeat', 'space', 'round'];
+        const TABLE_BACKGROUND_IMAGE_REPEAT = ['no-repeat'];//['repeat', 'repeat-x', 'repeat-y', 'no-repeat', 'space', 'round'];
+
+        //////////////////////////////////////////////// WINDOW DIMENSION //////////////////////////////////////////////////
+        let WINDOW_SIZE_X = window.innerWidth;
+        let WINDOW_SIZE_Y = window.innerHeight;
 
         //////////////////////////////////////////////// STATES INITIALISATION //////////////////////////////////////////////////
         let STATE_actualWindows = "main_windows";//main_windows, noise_windows, camera_windows, photo_windows
         let STATE_all_sound_muted = getData("STATE_all_sound_muted") ? getData("STATE_all_sound_muted") : "false";
         let STATE_background_image = getData("STATE_background_image") ? getData("STATE_background_image") : null;
         let STATE_background_image_size = getData("STATE_background_image_size") ? getData("STATE_background_image_size") : LIMIT_BACKGROUND_IMAGE_SIZE_MID;
+        let STATE_background_image_size_x = getData("STATE_background_image_size_x") ? getData("STATE_background_image_size_x") : 0;
+        let STATE_background_image_size_y = getData("STATE_background_image_size_y") ? getData("STATE_background_image_size_y") : 0;
         let STATE_background_image_raw_size_x = getData("STATE_background_image_raw_size_x") ? getData("STATE_background_image_raw_size_x") : 0;
         let STATE_background_image_raw_size_y = getData("STATE_background_image_raw_size_y") ? getData("STATE_background_image_raw_size_y") : 0;
         let STATE_background_image_raw_ratio = getData("STATE_background_image_raw_ratio") ? getData("STATE_background_image_raw_ratio") : 0;
@@ -896,8 +908,6 @@
         let STATE_last_pic_taken = getData("STATE_last_pic_taken") ? getData("STATE_last_pic_taken") : "src/img/last-pic-taken-screen.png";
         let STATE_turn_screen_to_default_fullscreen = getData("STATE_turn_screen_to_default_fullscreen") ? getData("STATE_turn_screen_to_default_fullscreen") : "src/img/full-screen.png";
 
-        
-
         ///////////////////////////////////////////////// VIEWS INITIALISATION //////////////////////////////////////////////////
         let VIEW_full_screen = document.querySelector('.VIEW_full_screen');
         let VIEW_noise_tv_sound = document.getElementById('VIEW_noise_tv_sound');
@@ -905,17 +915,14 @@
         let VIEW_background_image_editor_button = document.getElementById('VIEW_background_image_editor_button');
         let VIEW_background_color_editor_button = document.getElementById('VIEW_background_color_editor_button');
         let VIEW_image_input = document.getElementById('VIEW_image_input');
-        let VIEW_last_pic_taken = document.getElementById('VIEW_last_pic_taken');
-        
+        let VIEW_last_pic_taken = document.getElementById('VIEW_last_pic_taken');    
         let VIEW_top_left_buttons_refresh = document.getElementById('VIEW_top_left_buttons_refresh');
         let VIEW_top_left_buttons_color = document.getElementById('VIEW_top_left_buttons_color');
         let VIEW_top_left_buttons_image = document.getElementById('VIEW_top_left_buttons_image');
         let VIEW_top_left_buttons_mute = document.getElementById('VIEW_top_left_buttons_mute');
-        
         let VIEW_top_right_buttons = document.getElementById('VIEW_top_right_buttons');
         let VIEW_bottom_left_params_button = document.getElementById('VIEW_bottom_left_params_button');
         let VIEW_bottom_right_last_pic_taken_button = document.getElementById('VIEW_bottom_right_last_pic_taken_button');
-
         let VIEW_bottom_left_default_fullscreen_button = document.getElementById('VIEW_bottom_left_default_fullscreen_button');
         let VIEW_turn_screen_to_default_fullscreen = document.getElementById('VIEW_turn_screen_to_default_fullscreen');
 
@@ -924,10 +931,17 @@
         let BGI_isMouseDown = false;
         let BGI_lastX = 0;
         let BGI_lastY = 0;
-        let BGI_size = STATE_background_image_size;
-        let BGI_size_px_value = (STATE_background_image_size*window.innerHeight) / 100;
-        let BGI_size_x = BGI_size_px_value;
-        let BGI_size_y = BGI_size_x/STATE_background_image_raw_ratio;
+
+        let BGI_size = STATE_background_image_size;//useless soon
+        let BGI_size_px_value = (STATE_background_image_size*window.innerHeight) / 100;//useless soon
+        let BGI_size_x = BGI_size_px_value;//useless soon
+        let BGI_size_y = BGI_size_x/STATE_background_image_raw_ratio;//useless soon
+
+        let ancienne_position_de_x = 0;
+        let ancienne_position_de_y = 0;
+
+        let decalage_x = 0;
+        let decalage_y = 0;
 
         //////////////////////////////////////////////////// LOCK ZOOM /////////////////////////////////////////////////////////
         document.addEventListener('wheel', function(event) {
@@ -945,9 +959,25 @@
         //////////////////////////////////////////////// WINDOWS SIZE LISTENER //////////////////////////////////////////////////
         window.addEventListener('resize', function() {
             if (BGI_isMounted) {
-                BGI_size_px_value = (STATE_background_image_size*window.innerHeight) / 100;
-                BGI_size_x = BGI_size_px_value;
-                BGI_size_y = BGI_size_x/STATE_background_image_raw_ratio;
+                const WINDOW_X = window.innerWidth; WINDOW_SIZE_X = WINDOW_X;
+                const WINDOW_Y = window.innerHeight; WINDOW_SIZE_Y = WINDOW_Y;
+                
+                const POSITION_X = (WINDOW_X/2)-STATE_background_image_size_x/2;
+                const POSITION_Y = (WINDOW_Y/2)-STATE_background_image_size_y/2;
+                ancienne_position_de_x = POSITION_X;
+                ancienne_position_de_y = POSITION_Y;
+
+                //STATE
+                STATE_background_image_position_x = POSITION_X+decalage_x;
+                STATE_background_image_position_y = POSITION_Y+decalage_y;
+                
+                //VIEW
+                VIEW_full_screen.style.backgroundPositionX = STATE_background_image_position_x+'px';
+                VIEW_full_screen.style.backgroundPositionY = STATE_background_image_position_y+'px';
+
+                //DATA
+                setData("STATE_background_image_position_x", STATE_background_image_position_x);
+                setData("STATE_background_image_position_y", STATE_background_image_position_y);
             }
         });
 
@@ -962,9 +992,9 @@
                 reader.onload = function(e) {
                     const img = new Image();
                     img.onload = function() {
-
-                        //BACKGROUND IMAGE HANDLER IS INITIALISED
-                        BGI_isMounted = true;
+                        //LES DIMENSIONS DE LA FENÊTRE AU MOMENT Où ON UPLOAD L'IMAGE
+                        const WINDOW_X = window.innerWidth;
+                        const WINDOW_Y = window.innerHeight;
 
                         //STATE
                         STATE_background_image = img.src;
@@ -972,13 +1002,28 @@
                         STATE_background_image_raw_size_x = img.width;
                         STATE_background_image_raw_size_y = img.height;
                         STATE_background_image_raw_ratio = img.width/img.height;
-
-                        //UPDATE BGI_size_y base on new background_image_raw_ratio
-                        BGI_size_y = BGI_size_x/STATE_background_image_raw_ratio;
+                        if(STATE_background_image_raw_ratio >= 1){
+                            STATE_background_image_size_x = WINDOW_X/3;
+                            STATE_background_image_size_y = STATE_background_image_size_x/STATE_background_image_raw_ratio;
+                        }else{
+                            STATE_background_image_size_y = WINDOW_X/3;
+                            STATE_background_image_size_x = STATE_background_image_size_y*STATE_background_image_raw_ratio;
+                        }
+                        STATE_background_image_position_x = (WINDOW_X/2)-STATE_background_image_size_x/2;
+                        STATE_background_image_position_y = (WINDOW_Y/2)-STATE_background_image_size_y/2;
+                        ancienne_position_de_x = STATE_background_image_position_x;
+                        ancienne_position_de_y = STATE_background_image_position_y;
+                        decalage_x = STATE_background_image_position_x - ancienne_position_de_x;
+                        decalage_y = STATE_background_image_position_y - ancienne_position_de_y;
 
                         //VIEW
                         VIEW_background_image_editor_button.src = STATE_background_image_editor_button;
-                        if(STATE_actualWindows === "main_windows") VIEW_full_screen.style.backgroundImage = 'url('+STATE_background_image+')';
+                        if(STATE_actualWindows === "main_windows") {
+                            VIEW_full_screen.style.backgroundImage = 'url('+STATE_background_image+')';
+                            VIEW_full_screen.style.backgroundSize = STATE_background_image_size_x+'px '+STATE_background_image_size_y+'px';
+                            VIEW_full_screen.style.backgroundPositionX = STATE_background_image_position_x+'px';
+                            VIEW_full_screen.style.backgroundPositionY = STATE_background_image_position_y+'px';
+                        }
 
                         //DATA
                         setData("STATE_background_image_editor_button", STATE_background_image_editor_button);
@@ -986,7 +1031,13 @@
                         setData("STATE_background_image_raw_size_x", STATE_background_image_raw_size_x);
                         setData("STATE_background_image_raw_size_y", STATE_background_image_raw_size_y);
                         setData("STATE_background_image_raw_ratio", STATE_background_image_raw_ratio);
-
+                        setData("STATE_background_image_size_x", STATE_background_image_size_x);
+                        setData("STATE_background_image_size_y", STATE_background_image_size_y);   
+                        setData("STATE_background_image_position_x", STATE_background_image_position_x);
+                        setData("STATE_background_image_position_y", STATE_background_image_position_y);   
+                        
+                        //BACKGROUND IMAGE IS MOUNTED
+                        BGI_isMounted = true;
                     };
                     img.src = e.target.result;
                 };
@@ -1017,15 +1068,26 @@
                         BGI_size -= 10;
                     }
                     // Ensure the background size stays within reasonable bounds
-                    BGI_size = Math.max(LIMIT_BACKGROUND_IMAGE_SIZE_MIN, Math.min(LIMIT_BACKGROUND_IMAGE_SIZE_MAX, BGI_size));
+                    //BGI_size = Math.max(LIMIT_BACKGROUND_IMAGE_SIZE_MIN, Math.min(LIMIT_BACKGROUND_IMAGE_SIZE_MAX, BGI_size));
 
                     STATE_background_image_size = BGI_size;
-                    VIEW_full_screen.style.backgroundSize = STATE_background_image_size+'vh';
+                    VIEW_full_screen.style.backgroundSize = STATE_background_image_size+'px';
                     setData("STATE_background_image_size", STATE_background_image_size);
 
                     BGI_size_px_value = (STATE_background_image_size*window.innerHeight) / 100;
                     BGI_size_x = BGI_size_px_value;
                     BGI_size_y = BGI_size_x/STATE_background_image_raw_ratio;
+
+                    //console.log("BGI_size_x : "+BGI_size_x);
+
+                    //On applique les valeurs & on sauvegarde
+                    /*STATE_background_image_position_x = newPosX;
+                    STATE_background_image_position_y = newPosY;
+                    VIEW_full_screen.style.backgroundPositionX = STATE_background_image_position_x+'px';
+                    VIEW_full_screen.style.backgroundPositionY = STATE_background_image_position_y+'px';
+                    setData("STATE_background_image_position_x", STATE_background_image_position_x);
+                    setData("STATE_background_image_position_y", STATE_background_image_position_y);*/
+
                 }
             }
         });
@@ -1067,28 +1129,31 @@
             if (STATE_actualWindows === "main_windows") {
                 if (BGI_isMounted) {
                     if (BGI_isMouseDown) {
-                        const deltaX = e.clientX - BGI_lastX;
+
+                        const deltaX = e.clientX - BGI_lastX; 
                         const deltaY = e.clientY - BGI_lastY;
-
-                        const currentPosX = parseInt(VIEW_full_screen.style.backgroundPositionX || 0);
-                        const currentPosY = parseInt(VIEW_full_screen.style.backgroundPositionY || 0);
-
-                        const centerX = window.innerWidth;
-                        const centerY = window.innerHeight;
-
-                        const pre_newPosX = Math.min(Math.max(currentPosX + deltaX, -centerX), centerX);
-                        const pre_newPosY = Math.min(Math.max(currentPosY + deltaY, -centerY), centerY);
-
-                        const newPosX = pre_newPosX < -BGI_size_x ? -BGI_size_x : pre_newPosX;
-                        const newPosY = pre_newPosY < -BGI_size_y ? -BGI_size_y : pre_newPosY;
+    
+                        const currentPosX = parseInt(STATE_background_image_position_x || 0);
+                        const currentPosY = parseInt(STATE_background_image_position_y || 0);
+       
+                        const screenX = window.innerWidth;
+                        const screenY = window.innerHeight;
+                 
+                        const pre_newPosX = Math.min(Math.max(currentPosX + deltaX, -screenX), screenX);
+                        const pre_newPosY = Math.min(Math.max(currentPosY + deltaY, -screenY), screenY);
+                      
+                        const newPosX = pre_newPosX < -STATE_background_image_size_x ? -STATE_background_image_size_x : pre_newPosX;
+                        const newPosY = pre_newPosY < -STATE_background_image_size_y ? -STATE_background_image_size_y : pre_newPosY;
 
                         STATE_background_image_position_x = newPosX;
                         STATE_background_image_position_y = newPosY;
+                        decalage_x = STATE_background_image_position_x - ancienne_position_de_x;
+                        decalage_y = STATE_background_image_position_y - ancienne_position_de_y;
+
                         VIEW_full_screen.style.backgroundPositionX = STATE_background_image_position_x+'px';
                         VIEW_full_screen.style.backgroundPositionY = STATE_background_image_position_y+'px';
                         setData("STATE_background_image_position_x", STATE_background_image_position_x);
                         setData("STATE_background_image_position_y", STATE_background_image_position_y);
-
                         BGI_lastX = e.clientX;
                         BGI_lastY = e.clientY;
                     }
@@ -1145,7 +1210,7 @@
             VIEW_full_screen.style.backgroundRepeat = TABLE_BACKGROUND_IMAGE_REPEAT[STATE_background_image_repeat];
             VIEW_full_screen.style.backgroundPositionX = STATE_background_image_position_x+'px';
             VIEW_full_screen.style.backgroundPositionY = STATE_background_image_position_y+'px';
-            VIEW_full_screen.style.backgroundSize = STATE_background_image_size+'vh';
+            VIEW_full_screen.style.backgroundSize = STATE_background_image_size+'px';
 
             VIEW_last_pic_taken.src = STATE_last_pic_taken;
             VIEW_turn_screen_to_default_fullscreen.src = STATE_turn_screen_to_default_fullscreen;

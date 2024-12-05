@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galerie interactive</title>
+    <style>
+      * {
+          user-select: none;
+          -webkit-user-drag: none;
+      }
+          body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .viewer {
+            position: relative;
+            width: 80%;
+            height: 60%;
+            overflow: hidden;
+            border: 2px solid #ccc;
+            background-color: #000;
+        }
+
+        .image-container {
+            position: absolute;
+            cursor: grab;
+            transform-origin: center;
+            transition: transform 0.2s ease;
+        }
+
+        .controls {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="viewer">
+        <div class="image-container">
+            <img id="current-image" src="src/img/test/spirits-beer-and-drinks_categories_whisky-whiskey_scotch-whisky_split-8.jpg" alt="Image" style="width: 100%; height: auto;">
+        </div>
+    </div>
+    <div class="controls">
+        <button id="prev-button">Précédente</button>
+        <button id="zoom-in-button">Zoom +</button>
+        <button id="zoom-out-button">Zoom -</button>
+        <button id="next-button">Suivante</button>
+    </div>
+
+    <script>
+        const images = [
+          "src/img/test/spirits-beer-and-drinks_categories_whisky-whiskey_scotch-whisky_split-8.jpg",
+          "src/img/test/videoframe_463.png", 
+          "src/img/test/videoframe_1447.png"
+        ]; // Liste des images
+        let currentIndex = 0;
+        let scale = 1;
+        const maxScale = 2; // Niveau maximal de zoom
+        const minScale = 1; // Niveau minimal de zoom
+
+        const viewer = document.querySelector('.viewer');
+        const imageContainer = document.querySelector('.image-container');
+        const currentImage = document.getElementById('current-image');
+
+        // Changer d'image
+        const updateImage = () => {
+            currentImage.src = images[currentIndex];
+            scale = 1;
+            imageContainer.style.transform = `scale(${scale}) translate(0, 0)`;
+        };
+
+        document.getElementById('next-button').addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % images.length;
+            updateImage();
+        });
+
+        document.getElementById('prev-button').addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            updateImage();
+        });
+
+        // Zoom
+        document.getElementById('zoom-in-button').addEventListener('click', () => {
+            if (scale < maxScale) {
+                scale += 0.1;
+                imageContainer.style.transform = `scale(${scale})`;
+            }
+        });
+
+        document.getElementById('zoom-out-button').addEventListener('click', () => {
+            if (scale > minScale) {
+                scale -= 0.1;
+                imageContainer.style.transform = `scale(${scale})`;
+            }
+        });
+
+        // Déplacement de l'image
+        let isDragging = false;
+        let startX, startY, offsetX = 0, offsetY = 0;
+
+        imageContainer.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX - offsetX;
+            startY = e.clientY - offsetY;
+            imageContainer.style.cursor = "grabbing";
+        });
+
+        imageContainer.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                offsetX = e.clientX - startX;
+                offsetY = e.clientY - startY;
+                imageContainer.style.transform = `scale(${scale}) translate(${offsetX}px, ${offsetY}px)`;
+            }
+        });
+
+        imageContainer.addEventListener('mouseup', () => {
+            isDragging = false;
+            imageContainer.style.cursor = "grab";
+        });
+
+        imageContainer.addEventListener('mouseleave', () => {
+            isDragging = false;
+            imageContainer.style.cursor = "grab";
+        });
+    </script>
+</body>
+</html>

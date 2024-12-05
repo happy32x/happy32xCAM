@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      /************** photoExplorer ***************/
+      * {
+          user-select: none;
+          -webkit-user-drag: none;
+      }
+      body {
+        font-family: Lucida Console;
+        font-size: 13px;
+        margin: 0;
+        padding: 0;
+      }
+      /*********** MODAL **********/
+      #delete_image_button___modal {
+            z-index: 9999;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .delete_image_button___modal_content {
+            background: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .delete_image_button___modal_buttons {
+            margin-top: 15px;
+        }
+        .delete_image_button___modal_buttons button {
+            margin: 0 10px;
+        }
+
+      /************** VIEW BASIC **************/
+      .photoExplorer_fullscreen-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        display: none;
+        flex-direction: column;
+        z-index: 1000;
+      }
+      .photoExplorer_fullscreen-overlay.photoExplorer_active {
+        display: flex;
+      }
+      .photoExplorer_header {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .photoExplorer_header .photoExplorer_close-btn {
+        background: none; /* Pas de fond */
+        border: none; /* Pas de bordure */
+        cursor: pointer;
+        width: 30px;
+        height: 30px;
+        position: relative;
+      }
+      .photoExplorer_header .photoExplorer_close-btn::before,
+      .photoExplorer_header .photoExplorer_close-btn::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 30px;
+        height: 2px;
+        background-color: white;
+        transform-origin: center;
+      }
+      .photoExplorer_header .photoExplorer_close-btn::before {
+        transform: translate(-50%, -50%) rotate(45deg);
+      }
+      .photoExplorer_header .photoExplorer_close-btn::after {
+        transform: translate(-50%, -50%) rotate(-45deg);
+      }
+      #photoExplorer_closeBtn{
+          padding: 10px;
+          cursor: pointer;
+          opacity: 0.5;
+      }
+
+      /************** BOX **************/
+      .photoExplorer_box {
+        position: absolute;
+        padding: 3px;
+        color: white;
+        font-family: Lucida Console;
+        text-align: center;
+      }
+      .photoExplorer_top {
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 5px;
+      }
+      .photoExplorer_bottom {
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 5px;
+      }
+      .photoExplorer_left {
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        padding: 0px;
+      }
+      .photoExplorer_right {
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        padding: 0px;
+      }
+
+      /************** BUTTON **************/
+      .photoExplorer_items_buttons {
+        height: 40px;
+        width: 40px;
+        border-radius: 20px;
+        overflow: hidden;
+        background-color: rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex: 1;
+        text-align: center;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        margin-top: auto;
+      }
+     
+      .photoExplorer_items_buttons img {
+        width: 20px;
+        opacity: 0.5;
+      }
+
+      .photoExplorer_items_buttons .photoExplorer_delete_image{
+        width: 17px;
+        height: 19px;
+      }
+      /*@media (max-width: 1000px) {
+        .item_param {
+          height: 40px;
+          width: 40px;
+          border-radius: 20px;
+        }   
+        .item_param img{
+          width: 15px;
+        }
+      }*/
+        /************** VIEWS ITEMS BUTTONS SHOW & HIDDEN **************/
+        #VIEW_photoExplorer_items_buttons_zoom_plus {
+            display: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        #VIEW_photoExplorer_items_buttons_zoom_moin {
+            display: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        #VIEW_photoExplorer_items_buttons_download {
+            display: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        #delete_image_button {
+            display: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        #VIEW_photoExplorer_items_buttons_prev {
+            width: 20px;
+            border-radius: 0px;
+            transition: width 0.2s ease;
+        }
+        #VIEW_photoExplorer_items_buttons_prev_image {
+            width: 8px;/*15*/
+            transition: width 0.2s ease;
+        }
+        #VIEW_photoExplorer_items_buttons_next {
+            width: 20px;
+            border-radius: 0px;
+            transition: width 0.2s ease;
+        }
+        #VIEW_photoExplorer_items_buttons_next_image {
+            width: 8px;/*15*/
+            transition: width 0.2s ease;
+        }
+    </style>
+  </head>
+
+<body>
+    <!------------------------------------------------------ ALL MODAL --------------------------------------------------------------->
+    <!-- delete image button modal -->
+    <div id="delete_image_button___modal">
+        <div class="delete_image_button___modal_content">
+            <p>Are you sure you want delete this image?</p>
+            <div class="delete_image_button___modal_buttons">
+                <button id="delete_image_button___no_Button">No</button>
+                <button id="delete_image_button___yes_Button">Yes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- photo explorer fullscreen overlay modal -->
+    <div id="VIEW_photoExplorer_fullscreen_overlay" class="photoExplorer_fullscreen-overlay photoExplorer_active">
+        <img id="VIEW_photoExplorer_actual_image" src="src/img/videoframe_571112.png">
+
+        <div id="photoExplorer_header" class="photoExplorer_header">
+          <div id="photoExplorer_closeBtn">
+            <button class="photoExplorer_close-btn" aria-label="Fermer"></button>
+          </div>
+        </div>
+
+        <!------------------------ TOP BUTTONS --------------------------->
+        <div class="photoExplorer_box photoExplorer_top">
+          <div onclick="" id="VIEW_photoExplorer_items_buttons_zoom_plus" class="photoExplorer_items_buttons">
+            <img src="src/img/zoom+.png"
+                 draggable="false" 
+                 onload="this.style.display='block'; this.nextElementSibling.style.display='none';" 
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <p>DLD</p>
+          </div>
+          <div onclick="" id="VIEW_photoExplorer_items_buttons_zoom_moin" class="photoExplorer_items_buttons">
+            <img src="src/img/zoom-.png" 
+                 draggable="false" 
+                 onload="this.style.display='block'; this.nextElementSibling.style.display='none';" 
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <p>DLT</p>
+          </div>
+        </div>
+
+        <!------------------------ BOTTOM BUTTONS --------------------------->
+        <div class="photoExplorer_box photoExplorer_bottom">
+          <div onclick="" id="VIEW_photoExplorer_items_buttons_download" class="photoExplorer_items_buttons">
+            <img src="src/img/download.png"
+                 draggable="false" 
+                 onload="this.style.display='block'; this.nextElementSibling.style.display='none';" 
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <p>DLD</p>
+          </div>
+          <div id="delete_image_button" class="photoExplorer_items_buttons">
+            <img src="src/img/delete.png" 
+                 draggable="false" 
+                 onload="this.style.display='block'; this.nextElementSibling.style.display='none';" 
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                 class="photoExplorer_delete_image">
+            <p>DLT</p>
+          </div>
+        </div>
+
+        <!------------------------ LEFT BUTTON --------------------------->
+        <div class="photoExplorer_box photoExplorer_left">
+          <div onclick="" id="VIEW_photoExplorer_items_buttons_prev" class="photoExplorer_items_buttons">
+            <img id="VIEW_photoExplorer_items_buttons_prev_image"
+                 src="src/img/prev.png"
+                 draggable="false" 
+                 onload="this.style.display='block'; this.nextElementSibling.style.display='none';" 
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <p>DLD</p>
+          </div>
+        </div>
+
+        <!------------------------ RIGHT BUTTON --------------------------->
+        <div class="photoExplorer_box photoExplorer_right">
+          <div onclick="" id="VIEW_photoExplorer_items_buttons_next" class="photoExplorer_items_buttons">
+            <img id="VIEW_photoExplorer_items_buttons_next_image"
+                 src="src/img/next.png"
+                 draggable="false" 
+                 onload="this.style.display='block'; this.nextElementSibling.style.display='none';" 
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <p>DLD</p>
+          </div>
+        </div>
+
+    </div>   
+
+    <script>
+        //JUST FOR TEST NEED, DON'T EXPORT
+        function setData(key, value) { localStorage.setItem(key, value); }
+        function getData(key) { 
+            var value = localStorage.getItem(key);
+            return value;
+        }
+        function deleteData(key) { localStorage.removeItem(key); }
+
+       //////////////////////////////////////////////// STATES INITIALISATION //////////////////////////////////////////////////
+       let STATE_photoexplorer_fullscreen = getData("STATE_photoexplorer_fullscreen") ? getData("STATE_photoexplorer_fullscreen") : "default";
+       let STATE_photoexplorer_another_modal_is_activated = 0;
+
+       ///////////////////////////////////////////////// VIEWS INITIALISATION //////////////////////////////////////////////////
+       let VIEW_photoExplorer_fullscreen_overlay = document.getElementById('VIEW_photoExplorer_fullscreen_overlay');
+       let VIEW_photoExplorer_items_buttons_zoom_plus = document.getElementById('VIEW_photoExplorer_items_buttons_zoom_plus');
+       let VIEW_photoExplorer_items_buttons_zoom_moin = document.getElementById('VIEW_photoExplorer_items_buttons_zoom_moin');
+       let VIEW_photoExplorer_items_buttons_download = document.getElementById('VIEW_photoExplorer_items_buttons_download');
+       let VIEW_photoExplorer_items_buttons_prev = document.getElementById('VIEW_photoExplorer_items_buttons_prev');
+       let VIEW_photoExplorer_items_buttons_prev_image = document.getElementById('VIEW_photoExplorer_items_buttons_prev_image');
+       let VIEW_photoExplorer_items_buttons_next = document.getElementById('VIEW_photoExplorer_items_buttons_next');
+       let VIEW_photoExplorer_items_buttons_next_image = document.getElementById('VIEW_photoExplorer_items_buttons_next_image');
+
+       ////////////////////////////////////////////////// DELETE IMAGE MODAL ///////////////////////////////////////////////////
+        const delete_image_button = document.getElementById('delete_image_button');
+        //const delete_image_button___image = document.getElementById('delete_image_button___image');
+        const delete_image_button___modal = document.getElementById('delete_image_button___modal');
+        const delete_image_button___no_Button = document.getElementById('delete_image_button___no_Button');
+        const delete_image_button___yes_Button = document.getElementById('delete_image_button___yes_Button');
+
+        // Affiche le modal lorsque le bouton DELETE est cliqué
+        delete_image_button.addEventListener('click', () => {
+            delete_image_button___modal.style.display = 'flex';
+            STATE_photoexplorer_another_modal_is_activated = 1;
+        });
+
+        // Ferme le modal si on clique à l'extérieur ou sur le bouton "Non"
+        delete_image_button___modal.addEventListener('click', (e) => {
+          if (e.target === delete_image_button___modal || e.target === delete_image_button___no_Button) {
+            delete_image_button___modal.style.display = 'none';
+            setTimeout(() => {
+              STATE_photoexplorer_another_modal_is_activated = 0;
+              console.log(STATE_photoexplorer_another_modal_is_activated);
+            }, 300);
+          }
+        });
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape' && STATE_photoexplorer_another_modal_is_activated === 1 && VIEW_photoExplorer_fullscreen_overlay.classList.contains('photoExplorer_active')) {
+            delete_image_button___modal.style.display = 'none';
+            setTimeout(() => {
+              STATE_photoexplorer_another_modal_is_activated = 0;
+            }, 300);
+          }
+        });
+
+        // Supprime l'image et affiche une autre image si on clique sur "Oui"
+        delete_image_button___yes_Button.addEventListener('click', () => {
+            //location.reload();
+        });
+
+        /////////////////////////////////////////// BUTTON HEIGHT PREV/NEXT RESIZE //////////////////////////////////////////////
+        VIEW_photoExplorer_items_buttons_next.style.height = `${document.documentElement.clientHeight}px`;
+        VIEW_photoExplorer_items_buttons_prev.style.height = `${document.documentElement.clientHeight}px`;
+        
+        //////////////////////////////////////////////// WINDOWS SIZE LISTENER //////////////////////////////////////////////////
+        window.addEventListener('resize', function() {
+          VIEW_photoExplorer_items_buttons_next.style.height = `${document.documentElement.clientHeight}px`;
+          VIEW_photoExplorer_items_buttons_prev.style.height = `${document.documentElement.clientHeight}px`;
+        });
+
+        //////////////////////////////////////// TURN PHOTO EXPLORER TO DEFAULT/FULLSCREEN /////////////////////////////////////
+        function turn_photoexplorer_to_default_fullscreen() {
+          if(STATE_photoexplorer_fullscreen === "default") {
+                turn_photoexplorer_to_fullscreen__animation();
+                STATE_photoexplorer_fullscreen = "fullscreen";
+                setData("STATE_photoexplorer_fullscreen", STATE_photoexplorer_fullscreen);
+            }else{
+                turn_photoexplorer_to_default__animation();
+                STATE_photoexplorer_fullscreen = "default"
+                setData("STATE_photoexplorer_fullscreen", STATE_photoexplorer_fullscreen);
+            }
+        }
+
+        function turn_photoexplorer_to_fullscreen__animation() {
+          VIEW_photoExplorer_items_buttons_zoom_plus.style.transform = 'translateY(-50px)';
+          VIEW_photoExplorer_items_buttons_zoom_moin.style.transform = 'translateY(-50px)';
+          VIEW_photoExplorer_items_buttons_download.style.transform = 'translateY(50px)';
+          delete_image_button.style.transform = 'translateY(50px)';
+    
+          VIEW_photoExplorer_items_buttons_prev.style.width = '20px';
+          VIEW_photoExplorer_items_buttons_prev_image.style.width = '8px';
+          VIEW_photoExplorer_items_buttons_prev_image.style.height = '14px';
+
+          VIEW_photoExplorer_items_buttons_next.style.width = '20px';
+          VIEW_photoExplorer_items_buttons_next_image.style.width = '8px';
+          VIEW_photoExplorer_items_buttons_next_image.style.height = '14px';
+        
+          setTimeout(() => {
+            VIEW_photoExplorer_items_buttons_zoom_plus.style.opacity = 0;
+            VIEW_photoExplorer_items_buttons_zoom_plus.style.display = 'none'
+            VIEW_photoExplorer_items_buttons_zoom_moin.style.opacity = 0;
+            VIEW_photoExplorer_items_buttons_zoom_moin.style.display = 'none'
+            VIEW_photoExplorer_items_buttons_download.style.opacity = 0;
+            VIEW_photoExplorer_items_buttons_download.style.display = 'none'
+            delete_image_button.style.opacity = 0;
+            delete_image_button.style.display = 'none'
+          }, 40);
+        }
+
+        function turn_photoexplorer_to_default__animation() {       
+          VIEW_photoExplorer_items_buttons_zoom_plus.style.display = 'flex';
+          VIEW_photoExplorer_items_buttons_zoom_moin.style.display = 'flex';
+          VIEW_photoExplorer_items_buttons_download.style.display = 'flex';
+          delete_image_button.style.display = 'flex';
+
+          VIEW_photoExplorer_items_buttons_prev.style.width = '40px';
+          VIEW_photoExplorer_items_buttons_prev_image.style.width = '12px';
+          VIEW_photoExplorer_items_buttons_prev_image.style.height = '20px'
+
+          VIEW_photoExplorer_items_buttons_next.style.width = '40px';
+          VIEW_photoExplorer_items_buttons_next_image.style.width = '12px';
+          VIEW_photoExplorer_items_buttons_next_image.style.height = '20px';
+
+          setTimeout(() => {
+            VIEW_photoExplorer_items_buttons_zoom_plus.style.opacity = 1;
+            VIEW_photoExplorer_items_buttons_zoom_plus.style.transform = 'translateY(0px)';
+            VIEW_photoExplorer_items_buttons_zoom_moin.style.opacity = 1;
+            VIEW_photoExplorer_items_buttons_zoom_moin.style.transform = 'translateY(0px)';
+            VIEW_photoExplorer_items_buttons_download.style.opacity = 1;
+            VIEW_photoExplorer_items_buttons_download.style.transform = 'translateY(0px)';
+            delete_image_button.style.opacity = 1;
+            delete_image_button.style.transform = 'translateY(0px)';
+          }, 0);
+        }
+
+        //DISPLAY PHOTO EXPLOER FULLSCREEN OR NOT AT FIRST INSTANCE
+        if(STATE_photoexplorer_fullscreen === "default") {
+          turn_photoexplorer_to_default__animation();
+        }else{
+          turn_photoexplorer_to_fullscreen__animation();
+        }
+
+        //TURN PHOTOEXPLORER TO FULLSCREEN 
+        VIEW_photoExplorer_actual_image.addEventListener('dblclick', () => {
+          if(STATE_photoexplorer_another_modal_is_activated === 0){
+            turn_photoexplorer_to_default_fullscreen();
+          }
+        });
+
+        //HIDE PHOTOEXPLORER VIEW
+        VIEW_photoExplorer_fullscreen_overlay.addEventListener('dblclick', () => {
+          if (event.target !== VIEW_photoExplorer_fullscreen_overlay) {
+            event.stopImmediatePropagation();
+            return;
+          }
+          if (STATE_photoexplorer_another_modal_is_activated === 0) {
+            VIEW_photoExplorer_fullscreen_overlay.classList.remove('photoExplorer_active');
+          }
+        });
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape' && STATE_photoexplorer_another_modal_is_activated === 0 && VIEW_photoExplorer_fullscreen_overlay.classList.contains('photoExplorer_active')) {
+            VIEW_photoExplorer_fullscreen_overlay.classList.remove('photoExplorer_active');
+          }
+        });
+    </script>
+     
+</body>
+</html>
